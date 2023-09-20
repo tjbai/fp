@@ -108,7 +108,8 @@ let test_factors' _ =
 
 let test_split_list' _ =
   assert_equal (split_list [ 1; 2; 3; 4; 5 ] 3) ([ 1; 2; 3 ], [ 4; 5 ]);
-  assert_equal (split_list [ 1; 2; 3; 4; 5 ] 2) ([ 1; 2 ], [ 3; 4; 5 ])
+  assert_equal (split_list [ 1; 2; 3; 4; 5 ] 2) ([ 1; 2 ], [ 3; 4; 5 ]);
+  assert_equal (split_list [ 1; 2; 3; 4; 5 ] 0) ([], [ 1; 2; 3; 4; 5 ])
 
 let part2_section1_tests =
   "Part 2 Section 1"
