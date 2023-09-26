@@ -1,26 +1,16 @@
 (library
-  (name simpledict)
-  (modules
-    simpledict)
-  (libraries
-    core)
-  (preprocess
+ (name simpledict)
+ (modules simpledict)
+ (libraries core)
+ (preprocess
   (pps ppx_deriving.show)))
 
 (library
-  (name utils)
-  (modules
-    utils)
-  (libraries
-    core))
+ (name utils)
+ (modules utils)
+ (libraries core core_unix.sys_unix simpledict))
 
 (executable
-  (name keywordcount)
-  (modules
-    keywordcount)
-  (libraries
-    core
-    core_unix
-    stdio
-    simpledict
-    utils))
+ (name keywordcount)
+ (modules keywordcount)
+ (libraries core core_unix.sys_unix stdio simpledict utils))

@@ -265,6 +265,7 @@ let dict_tests =
          "D.of_list_multi" >:: test_of_list_multi;
        ]
 
-(* Add another suite for any of your part II functions needing testing as well.  Make sure to put those functions in utils.ml and headers in utils.mli as only libraries are unit tested; keywordcount.ml is an executable not a library. *)
+(* let test_text1 = " garbo  \"garbo\"\n\n\"garbo\"\n\ngarbogarbo\n\ngarbo"
+   let keywordcount_tests = "keywordcount tests" >: test_list [] *)
 let series = "Assignment2 Tests" >::: [ tree_tests; dict_tests ]
 let () = run_test_tt_main series

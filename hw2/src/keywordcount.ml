@@ -137,14 +137,82 @@ open Core
 (* ["and"; "as"; "assert"; "asr"; "begin"; "class"; "constraint"; "do"; "done"; "downto"; "else"; "end"; "exception"; "external"; "false"; "for"; "fun"; "function"; "functor"; "if"; "in"; "include"; "inherit"; "initializer"; "land"; "lazy"; "let"; "lor"; "lsl"; "lsr"; "lxor"; "match"; "method"; "mod"; "module"; "mutable"; "new"; "nonrec"; "object"; "of"; "open"; "or"; "private"; "rec"; "sig"; "struct"; "then"; "to"; "true"; "try"; "type"; "val"; "virtual"; "when"; "while"; "with";]
 *)
 
-(* 
-  As with C, the first argv is always the name of the executable, that's why we match on the second element in the list instead 
+let keywords =
+  [
+    "and";
+    "as";
+    "assert";
+    "asr";
+    "begin";
+    "class";
+    "constraint";
+    "do";
+    "done";
+    "downto";
+    "else";
+    "end";
+    "exception";
+    "external";
+    "false";
+    "for";
+    "fun";
+    "function";
+    "functor";
+    "if";
+    "in";
+    "include";
+    "inherit";
+    "initializer";
+    "land";
+    "lazy";
+    "let";
+    "lor";
+    "lsl";
+    "lsr";
+    "lxor";
+    "match";
+    "method";
+    "mod";
+    "module";
+    "mutable";
+    "new";
+    "nonrec";
+    "object";
+    "of";
+    "open";
+    "or";
+    "private";
+    "rec";
+    "sig";
+    "struct";
+    "then";
+    "to";
+    "true";
+    "try";
+    "type";
+    "val";
+    "virtual";
+    "when";
+    "while";
+    "with";
+  ]
+
+(*
+   As with C, the first argv is always the name of the executable, that's why we match on the second element in the list instead
 *)
 let () =
-  let target_dir = 
+  let target_dir =
     match Sys.get_argv () |> Array.to_list with
     | _ :: dir :: _ -> dir
-    | _ -> Core_unix.getcwd ()
+    | _ -> Sys_unix.getcwd ()
   in
-  (* your code here instead of the following line *)
-  Stdio.printf "Target dir: %s\n" target_dir
+
+  (* Merge counts from every file into accumulator *)
+  let merge_counts (freqs : int Simpledict.t) (path : string) =
+    Utils.count_all_keywords ~keywords ~path |> Simpledict.merge freqs
+  in
+
+  target_dir |> Utils.get_targets
+  |> List.fold ~init:Simpledict.Tree.Leaf ~f:merge_counts
+  |> Simpledict.to_list |> Utils.sort_frequencies
+  |> List.iter ~f:(fun (str, num) -> Printf.printf "%s: %d\n" str num)

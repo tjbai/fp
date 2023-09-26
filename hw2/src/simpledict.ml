@@ -2,7 +2,7 @@
 
 FPSE Assignment 2
 
-Name                  : 
+Name                  : TJ Bai
 List of Collaborators :
 
 Please make a good faith effort at listing people you discussed any problems with here, as per the course academic integrity policy.
