@@ -207,12 +207,22 @@ let () =
     | _ -> Sys_unix.getcwd ()
   in
 
+  (* Used to merge 2 dictionaries additively *)
+  let merge_with (a : int option) (b : int option) : int =
+    match (a, b) with
+    | Some x, Some y -> x + y
+    | Some x, None -> x
+    | None, Some y -> y
+    | None, None -> 0
+  in
+
   (* Merge counts from every file into accumulator *)
-  let merge_counts (freqs : int Simpledict.t) (path : string) =
-    Utils.count_all_keywords ~keywords ~path |> Simpledict.merge freqs
+  let accumulate_counts (freqs : int Simpledict.t) (path : string) =
+    Utils.count_all_keywords ~keywords ~path
+    |> Simpledict.merge_with ~merger:merge_with freqs
   in
 
   target_dir |> Utils.get_targets
-  |> List.fold ~init:Simpledict.Tree.Leaf ~f:merge_counts
-  |> Simpledict.to_list |> Utils.sort_frequencies
-  |> List.iter ~f:(fun (str, num) -> Printf.printf "%s: %d\n" str num)
+  |> List.fold ~init:Simpledict.Tree.Leaf ~f:accumulate_counts
+  |> Simpledict.to_list |> Utils.sort_and_filter |> Utils.to_sexp_string
+  |> Printf.printf "%s\n"

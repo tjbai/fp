@@ -1,7 +1,0 @@
-(*  garbo  "garbo" *)
-
-"garbo"
-
-garbogarbo
-
-garbo
