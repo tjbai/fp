@@ -265,7 +265,65 @@ let dict_tests =
          "D.of_list_multi" >:: test_of_list_multi;
        ]
 
-(* let test_text1 = " garbo  \"garbo\"\n\n\"garbo\"\n\ngarbogarbo\n\ngarbo"
-   let keywordcount_tests = "keywordcount tests" >: test_list [] *)
-let series = "Assignment2 Tests" >::: [ tree_tests; dict_tests ]
+let test_count_keyword _ =
+  (* Simple match *)
+  assert_equal 1 @@ Utils.count_keyword "test" "test";
+
+  (* Doesn't match comments *)
+  assert_equal 0 @@ Utils.count_keyword "test" "(*testtest test*)";
+
+  (* Doesn't match comments or quotes *)
+  assert_equal 0 @@ Utils.count_keyword "test" "(* testtest test*) \"test\"";
+
+  (* Non-character, multiple matches *)
+  assert_equal 2 @@ Utils.count_keyword "test" " test  test ";
+
+  (* Doesn't match noise *)
+  assert_equal 1 @@ Utils.count_keyword "test" "noise1 noise2 noise3noise4 test";
+
+  (* Nested comments *)
+  assert_equal 1 @@ Utils.count_keyword "test" "(* test (* test test *) *) test";
+
+  (* Comment symbol inside string, non-characters *)
+  assert_equal 1 @@ Utils.count_keyword "test" "\"(* test\" testa test"
+
+let test_sort_and_filter _ =
+  assert_equal [ ("a", 3); ("b", 2); ("c", 1) ]
+  @@ Utils.sort_and_filter [ ("c", 1); ("b", 2); ("a", 3) ];
+
+  assert_equal [ ("a", 3); ("b", 1); ("c", 1) ]
+  @@ Utils.sort_and_filter [ ("c", 1); ("b", 1); ("a", 3) ];
+
+  assert_equal [ ("c", 3); ("a", 1); ("b", 1) ]
+  @@ Utils.sort_and_filter [ ("c", 3); ("b", 1); ("a", 1) ];
+
+  assert_equal [ ("d", 1) ]
+  @@ Utils.sort_and_filter [ ("c", 0); ("b", 0); ("a", 0); ("d", 1) ]
+
+let test_to_sexp_string _ =
+  assert_equal
+    "(((keyword a)(count 3))((keyword b)(count 2))((keyword c)(count 1)))"
+  @@ Utils.to_sexp_string [ ("a", 3); ("b", 2); ("c", 1) ];
+
+  assert_equal
+    "(((keyword c)(count 3))((keyword a)(count 1))((keyword b)(count 1)))"
+  @@ ([ ("a", 1); ("b", 1); ("c", 3) ]
+     |> Utils.sort_and_filter |> Utils.to_sexp_string);
+
+  assert_equal "(((keyword d)(count 1)))"
+  @@ ([ ("c", 0); ("b", 0); ("a", 0); ("d", 1) ]
+     |> Utils.sort_and_filter |> Utils.to_sexp_string)
+
+let keywordcount_tests =
+  "keywordcount tests"
+  >: test_list
+       [
+         "Utils.count_keyword" >:: test_count_keyword;
+         "Utils.sort_and_filter" >:: test_sort_and_filter;
+         "Utils.to_sexp_string" >:: test_to_sexp_string;
+       ]
+
+let series =
+  "Assignment2 Tests" >::: [ tree_tests; dict_tests; keywordcount_tests ]
+
 let () = run_test_tt_main series
