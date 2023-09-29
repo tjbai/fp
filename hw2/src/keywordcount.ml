@@ -216,7 +216,7 @@ let () =
     | None, None -> 0
   in
 
-  (* Merge counts from every file into accumulator *)
+  (* Merge counts from every file into single dict *)
   let accumulate_counts (freqs : int Simpledict.t) (path : string) =
     Utils.count_all_keywords ~keywords ~path
     |> Simpledict.merge_with ~merger:merge_with freqs
