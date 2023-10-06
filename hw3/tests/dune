@@ -1,0 +1,8 @@
+; You need to fill in this file yourself.  It should be easy, though.
+;
+
+(test
+ (name tests)
+ (libraries core ounit2 finite_group)
+ (preprocess
+  (pps bisect_ppx)))

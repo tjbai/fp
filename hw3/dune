@@ -1,0 +1,12 @@
+(rule
+  (target assignment3.zip)
+  (deps 
+    src/finite_group.ml
+    src/ring.ml
+    src/postfix_calc.ml
+    src/dune
+    tests/tests.ml
+    tests/dune
+  )
+  (action
+    (run zip -R assignment3.zip %{deps})))

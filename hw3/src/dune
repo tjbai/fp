@@ -1,0 +1,16 @@
+(library
+ (name finite_group)
+ (modules finite_group)
+ (libraries core)
+ (preprocess
+  (pps ppx_jane)))
+
+(library
+ (name ring)
+ (modules ring)
+ (libraries core))
+
+(library
+ (name postfix_calc)
+ (modules postfix_calc)
+ (libraries core ring))
