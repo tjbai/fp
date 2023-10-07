@@ -40,7 +40,7 @@ module Make (P : Params) : S = struct
         then el1
         else acc)
 
-  let op (a : t) (b : t) : t = P.op a b % P.n
+  let op (a : t) (b : t) : t = P.op a b mod P.n
 
   let inverse (n : t) : t =
     List.fold els ~init:(-1) ~f:(fun acc el ->
@@ -59,5 +59,15 @@ module Z5_add : S = Make (Z5_params)
 
 module Memoize (G : S) : S with type t = G.t = struct
   include G
-  module Memo = Map.Make (G)
+  module GMap = Map.Make (G)
+
+  let map : t GMap.t =
+    let rec aux (acc : t GMap.t) (i : int) =
+      match G.of_int i with
+      | None -> acc
+      | Some n -> aux (Map.add_exn acc ~key:n ~data:(G.inverse n)) (i + 1)
+    in
+    aux GMap.empty 0
+
+  let inverse (n : t) : t = Map.find_exn map n
 end

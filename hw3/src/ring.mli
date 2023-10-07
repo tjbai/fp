@@ -18,7 +18,6 @@
   interfacing with the module.
 *)
 
-
 (*
   module type S is the module signature for a ring, similar to Finite_group.S.
 
@@ -37,31 +36,33 @@
   It might also be natural to compare ring elements, but for our basic usage of
   these modules in Part 2, we don't need `compare`.
 *)
-module type S =
-  sig
-    type t
-    val ( + ) : t -> t -> t
-    val ( * ) : t -> t -> t
-    val of_string : string -> t option
-    val to_string : t -> string
-  end
+module type S = sig
+  type t
 
-(* 
-  We'll implement one simple ring in `ring.ml`. This should be fast and easy
-  compared to the exercises given in `finite_group.mli`.
+  val ( + ) : t -> t -> t
+  val ( * ) : t -> t -> t
+  val of_string : string -> t option
+  val to_string : t -> string
+end
 
-  The ring we'll implement in this file is the integers modulo n.
-  e.g. If n=4, then Z/4Z is the set {0, 1, 2, 3} with addition and
-    multiplication operators defined naturally as in modular arithmetic.
+(*
+   We'll implement one simple ring in `ring.ml`. This should be fast and easy
+   compared to the exercises given in `finite_group.mli`.
 
-  You will implement the `Make_modular_ring` functor that takes a module with
-  an integer `n` that determines the size of the ring.
-  * Addition is regular modular addition of integers mod n
-  * Multiplication is regular modular multiplication of integers mod n
-  * of_string will convert a string to an integer in Z mod n if possible; `None` if not.
-  * to_string will convert an integer to a string representation.
+   The ring we'll implement in this file is the integers modulo n.
+   e.g. If n=4, then Z/4Z is the set {0, 1, 2, 3} with addition and
+     multiplication operators defined naturally as in modular arithmetic.
+
+   You will implement the `Make_modular_ring` functor that takes a module with
+   an integer `n` that determines the size of the ring.
+   * Addition is regular modular addition of integers mod n
+   * Multiplication is regular modular multiplication of integers mod n
+   * of_string will convert a string to an integer in Z mod n if possible; `None` if not.
+   * to_string will convert an integer to a string representation.
 *)
-module Make_modular_ring (_ : sig val n : int end) : S
+module Make_modular_ring (_ : sig
+  val n : int
+end) : S
 
 (*
   Now use your functor above to make the integers mod 4.
