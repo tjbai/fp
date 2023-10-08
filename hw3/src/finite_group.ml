@@ -30,17 +30,16 @@ module Make (P : Params) : S = struct
   type t = int [@@deriving compare, sexp]
 
   let els = List.init P.n ~f:Fn.id
+  let op (a : t) (b : t) : t = P.op a b mod P.n
 
   let id =
     List.fold els ~init:(-1) ~f:(fun acc el1 ->
         if
           List.fold els ~init:0 ~f:(fun tot el2 ->
-              if P.op el1 el2 = el2 && P.op el2 el1 = el2 then tot + 1 else tot)
+              if op el1 el2 = el2 && op el2 el1 = el2 then tot + 1 else tot)
           = P.n
         then el1
         else acc)
-
-  let op (a : t) (b : t) : t = P.op a b mod P.n
 
   let inverse (n : t) : t =
     List.fold els ~init:(-1) ~f:(fun acc el ->

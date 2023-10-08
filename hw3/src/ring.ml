@@ -16,7 +16,12 @@ end) : S = struct
 
   let ( + ) (a : t) (b : t) = (a + b) mod P.n
   let ( * ) (a : t) (b : t) = a * b mod P.n
-  let of_string (s : string) : t option = int_of_string_opt s
+
+  let of_string (s : string) : t option =
+    match int_of_string_opt s with
+    | None -> None
+    | Some i -> if i >= 0 && i < P.n then Some i else None
+
   let to_string (n : t) : string = string_of_int n
 end
 
