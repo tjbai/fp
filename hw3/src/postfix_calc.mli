@@ -1,4 +1,3 @@
-
 (* ************************************************************ *)
 (* ********************** P A R T II ************************** *)
 (* ************************************************************ *)
@@ -39,59 +38,57 @@
     e.g. "1/2 1/3 *" will evaluate to 1/6.
 *)
 
+(*
+   `Data` is the module type for the underlying data in the expression. It is an
+   extension on the Ring module type from the first part of this assignment. The
+   key extension is `next`. It reads a `t` off of the front of the string and
+   returns the remainder of the string as well as the `t` element.
 
-(* 
-  `Data` is the module type for the underlying data in the expression. It is an
-  extension on the Ring module type from the first part of this assignment. The
-  key extension is `next`. It reads a `t` off of the front of the string and
-  returns the remainder of the string as well as the `t` element.
-
-  Here are some clarifications on how `next` works.
-  1. whitespace (space, tab, newline) is a separator; the `t` value ends at that point.
-  2. `next` is only responsible for reading a `t` off the front of the string and
-    removing it from the front of the string.
-  3. It should obey the "maximal munch" principle: read in as many characters as possible
-    while still making a `t`. Here are some examples on integers:
-    a. `next "12"` => `Some ("", 12)`. It does not evaluate to `Some ("2", 1)` 
-    b. `next "12@"` => `Some ("@", 12)`.
-    Whitespace is a separator, but it is not the only separator. Consider anything that does not directly
-    contribute to `t` a separator.
-    Points 4 and 5 discusses the error cases.
-  4. `next` returns `None` if and only if no possible `t` can be pulled off the front of the string.
-  5. `next` will return `None` in four cases:
-      a. end of string
-      b. an illegal character, e.g. `@`
-      c. an operator (`+` and `*` only)
-      d. an illegal type (this is defined based on the concrete data type we are implementing)
+   Here are some clarifications on how `next` works.
+   1. whitespace (space, tab, newline) is a separator; the `t` value ends at that point.
+   2. `next` is only responsible for reading a `t` off the front of the string and
+     removing it from the front of the string.
+   3. It should obey the "maximal munch" principle: read in as many characters as possible
+     while still making a `t`. Here are some examples on integers:
+     a. `next "12"` => `Some ("", 12)`. It does not evaluate to `Some ("2", 1)`
+     b. `next "12@"` => `Some ("@", 12)`.
+     Whitespace is a separator, but it is not the only separator. Consider anything that does not directly
+     contribute to `t` a separator.
+     Points 4 and 5 discusses the error cases.
+   4. `next` returns `None` if and only if no possible `t` can be pulled off the front of the string.
+   5. `next` will return `None` in four cases:
+       a. end of string
+       b. an illegal character, e.g. `@`
+       c. an operator (`+` and `*` only)
+       d. an illegal type (this is defined based on the concrete data type we are implementing)
 *)
 
-module type Data =
-  sig
-    include Ring.S (* Has everything that ring has, and more! *)
-    val next : string -> (string * t) option
-  end
+module type Data = sig
+  include Ring.S (* Has everything that ring has, and more! *)
 
-(* 
-  The Evaluator for this simple language is then a functor of this Data type. It
-  evaluates expressions in the postfix language. It uses `Data.next` to get the
-  next value in the input string and does any necessary operations. If the
-  entire input cannot be parsed, `eval` will return `Error <error message>`;
-  otherwise it will return `Ok <t-value>`.
+  val next : string -> (string * t) option
+end
 
-  Clarifications:
-  1. If an illegal character or illegal type is encountered at any point, the evaluator will return `Error "illegal character"`.
-  2. If there are too few or too many operators (as in "1 2 + +" or "1 2") return `Error "unmatched"`.
-  3. Eval called on empty string should also return `Error "unmatched"`.
-  4. Note that operators need not be space-separated, e.g. "1 2 3++" returns `6`.
-  5. '+' and '*' are the characters corresponding to the Ring binary operations.
-    There are no other operations supported, and all others are illegal characters.
+(*
+   The Evaluator for this simple language is then a functor of this Data type. It
+   evaluates expressions in the postfix language. It uses `Data.next` to get the
+   next value in the input string and does any necessary operations. If the
+   entire input cannot be parsed, `eval` will return `Error <error message>`;
+   otherwise it will return `Ok <t-value>`.
+
+   Clarifications:
+   1. If an illegal character or illegal type is encountered at any point, the evaluator will return `Error "illegal character"`.
+   2. If there are too few or too many operators (as in "1 2 + +" or "1 2") return `Error "unmatched"`.
+   3. Eval called on empty string should also return `Error "unmatched"`.
+   4. Note that operators need not be space-separated, e.g. "1 2 3++" returns `6`.
+   5. '+' and '*' are the characters corresponding to the Ring binary operations.
+     There are no other operations supported, and all others are illegal characters.
 *)
-module type Eval =
-  sig
-    type t
+module type Eval = sig
+  type t
 
-    val eval : string -> (t, string) result
-  end
+  val eval : string -> (t, string) result
+end
 
 (*
   You will implement Make_eval, which takes the module of type Data and
@@ -145,15 +142,16 @@ module Make_eval (Data : Data) : Eval with type t = Data.t
   WE WILL CHECK BY HAND THAT YOU USED A FUNCTOR TO MAKE THE DATA MODULES FROM THE RING MODULES.
 *)
 
-module Z4_data : Data (* see Ring.Z4 from part 1 *)
-module Int_data : Data 
-module Rat_data : Data 
+module Make_data (Ring : Ring.S) : Data with type t = Ring.t
+module Z4_data : Data
+module Int_data : Data
+module Rat_data : Data
 
 (*
   With this, we may now create evaluators for Z4, integers, and rationals.
   These will be created in postfix_calc.ml with the Make_eval functor.   
 *)
-module Z4_eval  : Eval with type t = Z4_data.t
+module Z4_eval : Eval with type t = Z4_data.t
 module Int_eval : Eval with type t = Int_data.t
 module Rat_eval : Eval with type t = Rat_data.t
 
