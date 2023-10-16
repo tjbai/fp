@@ -51,7 +51,7 @@
    3. It should obey the "maximal munch" principle: read in as many characters as possible
      while still making a `t`. Here are some examples on integers:
      a. `next "12"` => `Some ("", 12)`. It does not evaluate to `Some ("2", 1)`
-     b. `next "12@"` => `Some ("@", 12)`.
+     b. `next "12@"` => `Some ("@", 12)`
      Whitespace is a separator, but it is not the only separator. Consider anything that does not directly
      contribute to `t` a separator.
      Points 4 and 5 discusses the error cases.

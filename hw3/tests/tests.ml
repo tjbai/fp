@@ -92,5 +92,106 @@ let p1_tests =
          "ring_times" >:: test_ring_times;
        ]
 
-let series = "Assignment3 Tests" >::: [ p1_tests ]
+let test_z4_next _ =
+  (assert_equal ("", "0")
+  @@
+  match Postfix_calc.Z4_data.next "0" with
+  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("+", "0")
+  @@
+  match Postfix_calc.Z4_data.next "0+" with
+  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal (" +", "0")
+  @@
+  match Postfix_calc.Z4_data.next "0 +" with
+  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("_asdfasdfasdf", "3")
+  @@
+  match Postfix_calc.Z4_data.next "3_asdfasdfasdf" with
+  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  | None -> ("", ""));
+
+  assert_equal None @@ Postfix_calc.Z4_data.next "";
+  assert_equal None @@ Postfix_calc.Z4_data.next "123+";
+  assert_equal None @@ Postfix_calc.Z4_data.next "-1 2 - 123+";
+  assert_equal None @@ Postfix_calc.Z4_data.next "+1";
+  assert_equal None @@ Postfix_calc.Z4_data.next "*1"
+
+let test_int_next _ =
+  (assert_equal ("", "-1")
+  @@
+  match Postfix_calc.Int_data.next "-1" with
+  | Some (exp, value) -> (exp, Postfix_calc.Int_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal (" 12345", "12345")
+  @@
+  match Postfix_calc.Int_data.next "12345 12345" with
+  | Some (exp, value) -> (exp, Postfix_calc.Int_data.to_string value)
+  | None -> ("", ""));
+
+  assert_equal (" 12345", "-12345")
+  @@
+  match Postfix_calc.Int_data.next "-12345 12345" with
+  | Some (exp, value) -> (exp, Postfix_calc.Int_data.to_string value)
+  | None -> ("", "")
+
+let test_rat_next _ =
+  (assert_equal ("", "1/2")
+  @@
+  match Postfix_calc.Rat_data.next "1/2" with
+  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("", "3/2")
+  @@
+  match Postfix_calc.Rat_data.next "18/12" with
+  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("", "-1/2")
+  @@
+  match Postfix_calc.Rat_data.next "-2/4" with
+  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("", "0/1")
+  @@
+  match Postfix_calc.Rat_data.next "0/1" with
+  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("", "5/1")
+  @@
+  match Postfix_calc.Rat_data.next "5" with
+  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  | None -> ("", ""));
+
+  assert_equal None @@ Postfix_calc.Rat_data.next "/";
+  assert_equal None @@ Postfix_calc.Rat_data.next "/50";
+  assert_equal None @@ Postfix_calc.Rat_data.next "5/0"
+
+let test_z4_eval _ = assert_equal 0 0
+let test_int_eval _ = assert_equal 0 0
+let test_rat_eval _ = assert_equal 0 0
+
+let p2_tests =
+  "Assignment3 Part2 Tests"
+  >: test_list
+       [
+         "z4_next" >:: test_z4_next;
+         "int_next" >:: test_int_next;
+         "rat_next" >:: test_rat_next;
+         "z4_eval" >:: test_z4_eval;
+         "int_eval" >:: test_int_eval;
+         "rat_eval" >:: test_rat_eval;
+       ]
+
+let series = "Assignment3 Tests" >::: [ p1_tests; p2_tests ]
 let () = run_test_tt_main series

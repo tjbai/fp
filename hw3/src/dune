@@ -13,4 +13,6 @@
 (library
  (name postfix_calc)
  (modules postfix_calc)
- (libraries core ring))
+ (libraries core ring stdio)
+ (preprocess
+  (pps bisect_ppx)))
