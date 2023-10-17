@@ -28,7 +28,6 @@ module Test_group = Finite_group.Make (struct
   let n = 5
 end)
 
-(* Helper to easily convert types without pattern matching *)
 let z5_of_int (n : int) : Z5_add.t =
   match Z5_add.of_int n with Some c -> c | None -> assert false
 
@@ -177,9 +176,104 @@ let test_rat_next _ =
   assert_equal None @@ Postfix_calc.Rat_data.next "/50";
   assert_equal None @@ Postfix_calc.Rat_data.next "5/0"
 
-let test_z4_eval _ = assert_equal 0 0
-let test_int_eval _ = assert_equal 0 0
-let test_rat_eval _ = assert_equal 0 0
+let test_z4_eval _ =
+  (assert_equal "2"
+  @@
+  match Postfix_calc.Z4_eval.eval "1 1 +" with
+  | Ok res -> Postfix_calc.Z4_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "2"
+  @@
+  match Postfix_calc.Z4_eval.eval "1\r1\t+" with
+  | Ok res -> Postfix_calc.Z4_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "2"
+  @@
+  match Postfix_calc.Z4_eval.eval "1\r1 +\n" with
+  | Ok res -> Postfix_calc.Z4_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "unmatched"
+  @@
+  match Postfix_calc.Z4_eval.eval "" with
+  | Ok res -> Postfix_calc.Z4_data.to_string res
+  | Error msg -> msg);
+
+  assert_equal "unmatched"
+  @@
+  match Postfix_calc.Z4_eval.eval "1 1 1 1" with
+  | Ok res -> Postfix_calc.Z4_data.to_string res
+  | Error msg -> msg
+
+let test_int_eval _ =
+  (assert_equal "3"
+  @@
+  match Postfix_calc.Int_eval.eval "1 2 +" with
+  | Ok res -> Postfix_calc.Int_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "8"
+  @@
+  match Postfix_calc.Int_eval.eval "1 2 3++ 2 +" with
+  | Ok res -> Postfix_calc.Int_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "8"
+  @@
+  match Postfix_calc.Int_eval.eval "   2    2 2**" with
+  | Ok res -> Postfix_calc.Int_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Postfix_calc.Int_eval.eval "2 2+ __" with
+  | Ok res -> Postfix_calc.Int_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "unmatched"
+  @@
+  match Postfix_calc.Int_eval.eval "1 2 + +" with
+  | Ok res -> Postfix_calc.Int_data.to_string res
+  | Error msg -> msg);
+
+  assert_equal "unmatched"
+  @@
+  match Postfix_calc.Int_eval.eval "1 + +" with
+  | Ok res -> Postfix_calc.Int_data.to_string res
+  | Error msg -> msg
+
+let test_rat_eval _ =
+  (assert_equal "9/1"
+  @@
+  match Postfix_calc.Rat_eval.eval "5 4 +" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "1/1"
+  @@
+  match Postfix_calc.Rat_eval.eval "1/2 1/2 +" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "1/1"
+  @@
+  match Postfix_calc.Rat_eval.eval "1/2 1/2 * 3/4 +" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "2/1"
+  @@
+  match Postfix_calc.Rat_eval.eval "4/4 1 +" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
+  assert_equal "1/4"
+  @@
+  match Postfix_calc.Rat_eval.eval "1/2 1/2 *" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg
 
 let p2_tests =
   "Assignment3 Part2 Tests"

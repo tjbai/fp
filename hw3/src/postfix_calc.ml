@@ -109,10 +109,9 @@ module Rat_data = Make_data (struct
   let ( * ) ((ap, aq) : t) ((bp, bq) : t) = reduce (ap * bp, aq * bq)
 
   let of_string (s : string) : t option =
-    (* let i = String.index_opt s '/' in *)
-    (* Stdio.printf "i: %d" i; *)
     match String.index_opt s '/' with
-    | None -> Some (int_of_string s, 1)
+    | None -> (
+        match int_of_string_opt s with Some a -> Some (a, 1) | None -> None)
     | Some i -> (
         match
           ( String.sub s 0 i |> int_of_string_opt,
