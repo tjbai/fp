@@ -269,6 +269,24 @@ let test_rat_eval _ =
   | Ok res -> Postfix_calc.Rat_data.to_string res
   | Error msg -> msg);
 
+  (assert_equal "-1/20"
+  @@
+  match Postfix_calc.Rat_eval.eval "-5/100" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "-1/20"
+  @@
+  match Postfix_calc.Rat_eval.eval "-1 5/100 *" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "0/1"
+  @@
+  match Postfix_calc.Rat_eval.eval "0 -1 + 4/4 + 5 * 1000/1234 *" with
+  | Ok res -> Postfix_calc.Rat_data.to_string res
+  | Error msg -> msg);
+
   assert_equal "1/4"
   @@
   match Postfix_calc.Rat_eval.eval "1/2 1/2 *" with
@@ -287,5 +305,6 @@ let p2_tests =
          "rat_eval" >:: test_rat_eval;
        ]
 
-let series = "Assignment3 Tests" >::: [ p1_tests; p2_tests ]
+let spec_tests = "Specifications" >: test_list []
+let series = "Assignment3 Tests" >::: [ p1_tests; p2_tests; spec_tests ]
 let () = run_test_tt_main series

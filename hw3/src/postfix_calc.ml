@@ -14,14 +14,15 @@ module Make_data (Ring : Ring.S) : Data with type t = Ring.t = struct
   include Ring
 
   let next (s : string) : (string * t) option =
-    let is_separator (c : char) : bool =
+    let is_separator (c : char) (h : string) : bool =
       ((int_of_char c >= int_of_char '0' && int_of_char c <= int_of_char '9')
-      || Char.equal c '/' || Char.equal c '-')
+      || Char.equal c '/'
+      || (String.length h = 0 && Char.equal c '-'))
       |> not
     in
 
     let rec find_sep (h : string) (t : string) : string * string =
-      if String.length t = 0 || is_separator t.[0] then (h, t)
+      if String.length t = 0 || is_separator t.[0] h then (h, t)
       else
         find_sep
           (h ^ String.make 1 t.[0])
@@ -43,38 +44,31 @@ module Make_eval (Data : Data) : Eval with type t = Data.t = struct
 
   let is_operator (c : char) : bool = c = '+' || c = '*'
 
-  let eval (s : string) : (t, string) result =
-    let rec aux (exp : string) (stk : t Stack.t) : (t, string) result =
-      (* base case: end of string *)
-      if String.length exp = 0 then
-        if Stack.length stk > 1 || Stack.length stk == 0 then Error "unmatched"
-        else Ok (Stack.top stk)
+  let rec eval_rec (exp : string) (stk : t Stack.t) : (t, string) result =
+    if String.length exp = 0 then
+      if Stack.length stk > 1 || Stack.length stk == 0 then Error "unmatched"
+      else Ok (Stack.top stk)
+    else if is_operator exp.[0] then
+      if Stack.length stk < 2 then Error "unmatched"
       else
-        match Data.next exp with
-        (* if we can pull a value, add it to the stack *)
-        | Some (new_exp, value) ->
-            Stack.push value stk;
-            aux new_exp stk
-        (* otherwise, match with whitespace, operators, or illegal characters *)
-        | None -> (
-            let new_exp = String.sub exp 1 (String.length exp - 1) in
-            match exp.[0] with
-            | c when is_operator c ->
-                if Stack.length stk < 2 then Error "unmatched"
-                else
-                  let a = Stack.pop stk in
-                  let b = Stack.pop stk in
-                  if exp.[0] = '+' then (
-                    Stack.push (Data.( + ) a b) stk;
-                    aux new_exp stk)
-                  else (
-                    Stack.push (Data.( * ) a b) stk;
-                    aux new_exp stk)
-            | c when is_whitespace c -> aux new_exp stk
-            | _ -> Error "illegal character")
-    in
+        let a = Stack.pop stk in
+        let b = Stack.pop stk in
+        if exp.[0] = '+' then (
+          Stack.push (Data.( + ) a b) stk;
+          eval_rec (String.sub exp 1 (String.length exp - 1)) stk)
+        else (
+          Stack.push (Data.( * ) a b) stk;
+          eval_rec (String.sub exp 1 (String.length exp - 1)) stk)
+    else if is_whitespace exp.[0] then
+      eval_rec (String.sub exp 1 (String.length exp - 1)) stk
+    else
+      match Data.next exp with
+      | Some (new_exp, value) ->
+          Stack.push value stk;
+          eval_rec new_exp stk
+      | None -> Error "illegal character"
 
-    aux s (Stack.create ())
+  let eval (s : string) : (t, string) result = eval_rec s (Stack.create ())
 end
 
 module Z4_data = Make_data (Ring.Z4)
@@ -91,17 +85,12 @@ end)
 module Rat_data = Make_data (struct
   type t = int * int
 
+  let rec gcd (a : int) (b : int) : int =
+    if a < b then gcd b a else if b = 0 then a else gcd b (a mod b)
+
   let reduce ((p, q) : t) : int * int =
-    let rec gcd (a : int) (b : int) : int =
-      if a < b then gcd b a else if b = 0 then a else gcd b (Int.rem a b)
-    in
-
-    let rec aux (p : int) (q : int) : int * int =
-      let d = if p < 0 then gcd (-p) q else gcd p q in
-      if d = 1 then (p, q) else aux (Int.div p d) (Int.div q d)
-    in
-
-    aux p q
+    let d = if p < 0 then gcd (-p) q else gcd p q in
+    (Int.div p d, Int.div q d)
 
   let ( + ) ((ap, aq) : t) ((bp, bq) : t) =
     reduce ((ap * bq) + (bp * aq), aq * bq)
@@ -127,3 +116,8 @@ end)
 module Z4_eval = Make_eval (Z4_data)
 module Int_eval = Make_eval (Int_data)
 module Rat_eval = Make_eval (Rat_data)
+(* module Rat_eval = struct
+     type t = int * int
+
+     let eval (s : string) : (t, string) result = Error s
+   end *)
