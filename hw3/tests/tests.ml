@@ -22,6 +22,7 @@
 open OUnit2
 open Finite_group
 open Ring
+open Postfix_calc
 
 module Test_group = Finite_group.Make (struct
   let op (a : int) (b : int) : int = a + b - 2
@@ -94,203 +95,203 @@ let p1_tests =
 let test_z4_next _ =
   (assert_equal ("", "0")
   @@
-  match Postfix_calc.Z4_data.next "0" with
-  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  match Z4_data.next "0" with
+  | Some (exp, value) -> (exp, Z4_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal ("+", "0")
   @@
-  match Postfix_calc.Z4_data.next "0+" with
-  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  match Z4_data.next "0+" with
+  | Some (exp, value) -> (exp, Z4_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal (" +", "0")
   @@
-  match Postfix_calc.Z4_data.next "0 +" with
-  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  match Z4_data.next "0 +" with
+  | Some (exp, value) -> (exp, Z4_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal ("_asdfasdfasdf", "3")
   @@
-  match Postfix_calc.Z4_data.next "3_asdfasdfasdf" with
-  | Some (exp, value) -> (exp, Postfix_calc.Z4_data.to_string value)
+  match Z4_data.next "3_asdfasdfasdf" with
+  | Some (exp, value) -> (exp, Z4_data.to_string value)
   | None -> ("", ""));
 
-  assert_equal None @@ Postfix_calc.Z4_data.next "";
-  assert_equal None @@ Postfix_calc.Z4_data.next "123+";
-  assert_equal None @@ Postfix_calc.Z4_data.next "-1 2 - 123+";
-  assert_equal None @@ Postfix_calc.Z4_data.next "+1";
-  assert_equal None @@ Postfix_calc.Z4_data.next "*1"
+  assert_equal None @@ Z4_data.next "";
+  assert_equal None @@ Z4_data.next "123+";
+  assert_equal None @@ Z4_data.next "-1 2 - 123+";
+  assert_equal None @@ Z4_data.next "+1";
+  assert_equal None @@ Z4_data.next "*1"
 
 let test_int_next _ =
   (assert_equal ("", "-1")
   @@
-  match Postfix_calc.Int_data.next "-1" with
-  | Some (exp, value) -> (exp, Postfix_calc.Int_data.to_string value)
+  match Int_data.next "-1" with
+  | Some (exp, value) -> (exp, Int_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal (" 12345", "12345")
   @@
-  match Postfix_calc.Int_data.next "12345 12345" with
-  | Some (exp, value) -> (exp, Postfix_calc.Int_data.to_string value)
+  match Int_data.next "12345 12345" with
+  | Some (exp, value) -> (exp, Int_data.to_string value)
   | None -> ("", ""));
 
   assert_equal (" 12345", "-12345")
   @@
-  match Postfix_calc.Int_data.next "-12345 12345" with
-  | Some (exp, value) -> (exp, Postfix_calc.Int_data.to_string value)
+  match Int_data.next "-12345 12345" with
+  | Some (exp, value) -> (exp, Int_data.to_string value)
   | None -> ("", "")
 
 let test_rat_next _ =
   (assert_equal ("", "1/2")
   @@
-  match Postfix_calc.Rat_data.next "1/2" with
-  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  match Rat_data.next "1/2" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal ("", "3/2")
   @@
-  match Postfix_calc.Rat_data.next "18/12" with
-  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  match Rat_data.next "18/12" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal ("", "-1/2")
   @@
-  match Postfix_calc.Rat_data.next "-2/4" with
-  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  match Rat_data.next "-2/4" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal ("", "0/1")
   @@
-  match Postfix_calc.Rat_data.next "0/1" with
-  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  match Rat_data.next "0/1" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
   | None -> ("", ""));
 
   (assert_equal ("", "5/1")
   @@
-  match Postfix_calc.Rat_data.next "5" with
-  | Some (exp, value) -> (exp, Postfix_calc.Rat_data.to_string value)
+  match Rat_data.next "5" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
   | None -> ("", ""));
 
-  assert_equal None @@ Postfix_calc.Rat_data.next "/";
-  assert_equal None @@ Postfix_calc.Rat_data.next "/50";
-  assert_equal None @@ Postfix_calc.Rat_data.next "5/0"
+  assert_equal None @@ Rat_data.next "/";
+  assert_equal None @@ Rat_data.next "/50";
+  assert_equal None @@ Rat_data.next "5/0"
 
 let test_z4_eval _ =
   (assert_equal "2"
   @@
-  match Postfix_calc.Z4_eval.eval "1 1 +" with
-  | Ok res -> Postfix_calc.Z4_data.to_string res
+  match Z4_eval.eval "1 1 +" with
+  | Ok res -> Z4_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "2"
   @@
-  match Postfix_calc.Z4_eval.eval "1\r1\t+" with
-  | Ok res -> Postfix_calc.Z4_data.to_string res
+  match Z4_eval.eval "1\r1\t+" with
+  | Ok res -> Z4_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "2"
   @@
-  match Postfix_calc.Z4_eval.eval "1\r1 +\n" with
-  | Ok res -> Postfix_calc.Z4_data.to_string res
+  match Z4_eval.eval "1\r1 +\n" with
+  | Ok res -> Z4_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "unmatched"
   @@
-  match Postfix_calc.Z4_eval.eval "" with
-  | Ok res -> Postfix_calc.Z4_data.to_string res
+  match Z4_eval.eval "" with
+  | Ok res -> Z4_data.to_string res
   | Error msg -> msg);
 
   assert_equal "unmatched"
   @@
-  match Postfix_calc.Z4_eval.eval "1 1 1 1" with
-  | Ok res -> Postfix_calc.Z4_data.to_string res
+  match Z4_eval.eval "1 1 1 1" with
+  | Ok res -> Z4_data.to_string res
   | Error msg -> msg
 
 let test_int_eval _ =
   (assert_equal "3"
   @@
-  match Postfix_calc.Int_eval.eval "1 2 +" with
-  | Ok res -> Postfix_calc.Int_data.to_string res
+  match Int_eval.eval "1 2 +" with
+  | Ok res -> Int_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "8"
   @@
-  match Postfix_calc.Int_eval.eval "1 2 3++ 2 +" with
-  | Ok res -> Postfix_calc.Int_data.to_string res
+  match Int_eval.eval "1 2 3++ 2 +" with
+  | Ok res -> Int_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "8"
   @@
-  match Postfix_calc.Int_eval.eval "   2    2 2**" with
-  | Ok res -> Postfix_calc.Int_data.to_string res
+  match Int_eval.eval "   2    2 2**" with
+  | Ok res -> Int_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "illegal character"
   @@
-  match Postfix_calc.Int_eval.eval "2 2+ __" with
-  | Ok res -> Postfix_calc.Int_data.to_string res
+  match Int_eval.eval "2 2+ __" with
+  | Ok res -> Int_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "unmatched"
   @@
-  match Postfix_calc.Int_eval.eval "1 2 + +" with
-  | Ok res -> Postfix_calc.Int_data.to_string res
+  match Int_eval.eval "1 2 + +" with
+  | Ok res -> Int_data.to_string res
   | Error msg -> msg);
 
   assert_equal "unmatched"
   @@
-  match Postfix_calc.Int_eval.eval "1 + +" with
-  | Ok res -> Postfix_calc.Int_data.to_string res
+  match Int_eval.eval "1 + +" with
+  | Ok res -> Int_data.to_string res
   | Error msg -> msg
 
 let test_rat_eval _ =
   (assert_equal "9/1"
   @@
-  match Postfix_calc.Rat_eval.eval "5 4 +" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "5 4 +" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "1/1"
   @@
-  match Postfix_calc.Rat_eval.eval "1/2 1/2 +" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "1/2 1/2 +" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "1/1"
   @@
-  match Postfix_calc.Rat_eval.eval "1/2 1/2 * 3/4 +" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "1/2 1/2 * 3/4 +" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "2/1"
   @@
-  match Postfix_calc.Rat_eval.eval "4/4 1 +" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "4/4 1 +" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "-1/20"
   @@
-  match Postfix_calc.Rat_eval.eval "-5/100" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "-5/100" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "-1/20"
   @@
-  match Postfix_calc.Rat_eval.eval "-1 5/100 *" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "-1 5/100 *" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   (assert_equal "0/1"
   @@
-  match Postfix_calc.Rat_eval.eval "0 -1 + 4/4 + 5 * 1000/1234 *" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "0 -1 + 4/4 + 5 * 1000/1234 *" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg);
 
   assert_equal "1/4"
   @@
-  match Postfix_calc.Rat_eval.eval "1/2 1/2 *" with
-  | Ok res -> Postfix_calc.Rat_data.to_string res
+  match Rat_eval.eval "1/2 1/2 *" with
+  | Ok res -> Rat_data.to_string res
   | Error msg -> msg
 
 let p2_tests =
@@ -305,6 +306,143 @@ let p2_tests =
          "rat_eval" >:: test_rat_eval;
        ]
 
-let spec_tests = "Specifications" >: test_list []
+let test_division_by_zero _ =
+  (assert_equal "illegal character"
+  @@
+  match Rat_eval.eval "0 -1 + 4/4 + 5/0" with
+  | Ok res -> Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Rat_eval.eval "0 0 0 1/0 + + +" with
+  | Ok res -> Rat_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Rat_eval.eval "1 2 + 0 * 0/0" with
+  | Ok res -> Rat_data.to_string res
+  | Error msg -> msg);
+
+  assert_equal None @@ Rat_data.next "1/0___asdfasdf123123ja"
+
+let test_simple_fraction _ =
+  (assert_equal ("", "1/2")
+  @@
+  match Rat_data.next "2/4" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("", "1/2")
+  @@
+  match Rat_data.next "222333444/444666888" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
+  | None -> ("", ""));
+
+  (assert_equal ("", "-1/2")
+  @@
+  match Rat_data.next "-222333444/444666888" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
+  | None -> ("", ""));
+
+  assert_equal ("", "-1/2")
+  @@
+  match Rat_data.next "-2/4" with
+  | Some (exp, value) -> (exp, Rat_data.to_string value)
+  | None -> ("", "")
+
+let test_no_characters_lost _ =
+  (assert_equal "1 2 0 asdfasdf a + - -"
+  @@
+  match Z4_data.next "1 2 0 asdfasdf a + - -" with
+  | Some (exp, value) -> Z4_data.to_string value ^ exp
+  | None -> "");
+
+  (assert_equal "1234"
+  @@
+  match Int_data.next "1234" with
+  | Some (exp, value) -> Int_data.to_string value ^ exp
+  | None -> "");
+
+  (assert_equal "1234 1 +"
+  @@
+  match Int_data.next "1234 1 +" with
+  | Some (exp, value) -> Int_data.to_string value ^ exp
+  | None -> "");
+
+  assert_equal "1 2 0 asdfasdf a + - -"
+  @@
+  match Int_data.next "1 2 0 asdfasdf a + - -" with
+  | Some (exp, value) -> Int_data.to_string value ^ exp
+  | None -> ""
+
+let test_illegal_characters _ =
+  (assert_equal "illegal character"
+  @@
+  match Z4_eval.eval "1 2@+" with
+  | Ok res -> Z4_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Int_eval.eval "1 2@+" with
+  | Ok res -> Int_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Int_eval.eval "12 23 + 2 * %" with
+  | Ok res -> Int_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Rat_eval.eval "1/2 2/3 + 4/8 * %" with
+  | Ok res -> Rat_data.to_string res
+  | Error msg -> msg);
+
+  assert_equal "illegal character"
+  @@
+  match Rat_eval.eval "1 2@+" with
+  | Ok res -> Rat_data.to_string res
+  | Error msg -> msg
+
+let test_illegal_types _ =
+  (assert_equal "illegal character"
+  @@
+  match Z4_eval.eval "-1 2 +" with
+  | Ok res -> Z4_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Z4_eval.eval "4 2 +" with
+  | Ok res -> Z4_data.to_string res
+  | Error msg -> msg);
+
+  (assert_equal "illegal character"
+  @@
+  match Int_eval.eval "4/1 2/1 +" with
+  | Ok res -> Int_data.to_string res
+  | Error msg -> msg);
+
+  assert_equal "illegal character"
+  @@
+  match Int_eval.eval "1 2 +\t\t5* 3/8*" with
+  | Ok res -> Int_data.to_string res
+  | Error msg -> msg
+
+let spec_tests =
+  "Specifications"
+  >: test_list
+       [
+         "division_by_zero" >:: test_division_by_zero;
+         "simple_fraction" >:: test_simple_fraction;
+         "no_characters_lost" >:: test_no_characters_lost;
+         "illegal_characters" >:: test_illegal_characters;
+         "illegal_types" >:: test_illegal_types;
+       ]
+
 let series = "Assignment3 Tests" >::: [ p1_tests; p2_tests; spec_tests ]
 let () = run_test_tt_main series

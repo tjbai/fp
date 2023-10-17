@@ -85,11 +85,11 @@ end)
 module Rat_data = Make_data (struct
   type t = int * int
 
-  let rec gcd (a : int) (b : int) : int =
-    if a < b then gcd b a else if b = 0 then a else gcd b (a mod b)
+  let rec gcd ((a, b) : t) : int =
+    if a < b then gcd (b, a) else if b = 0 then a else gcd (b, a mod b)
 
   let reduce ((p, q) : t) : int * int =
-    let d = if p < 0 then gcd (-p) q else gcd p q in
+    let d = if p < 0 then gcd (-p, q) else gcd (p, q) in
     (Int.div p d, Int.div q d)
 
   let ( + ) ((ap, aq) : t) ((bp, bq) : t) =
@@ -116,8 +116,3 @@ end)
 module Z4_eval = Make_eval (Z4_data)
 module Int_eval = Make_eval (Int_data)
 module Rat_eval = Make_eval (Rat_data)
-(* module Rat_eval = struct
-     type t = int * int
-
-     let eval (s : string) : (t, string) result = Error s
-   end *)
