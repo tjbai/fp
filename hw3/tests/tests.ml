@@ -306,6 +306,7 @@ let p2_tests =
          "rat_eval" >:: test_rat_eval;
        ]
 
+(* Specification: Dividing by zero is illegal *)
 let test_division_by_zero _ =
   (assert_equal "illegal character"
   @@
@@ -327,6 +328,7 @@ let test_division_by_zero _ =
 
   assert_equal None @@ Rat_data.next "1/0___asdfasdf123123ja"
 
+(* Specification: Fractions are simplified *)
 let test_simple_fraction _ =
   (assert_equal ("", "1/2")
   @@
@@ -352,6 +354,11 @@ let test_simple_fraction _ =
   | Some (exp, value) -> (exp, Rat_data.to_string value)
   | None -> ("", "")
 
+(*
+  Specification:
+    Reading next on a string preserves
+    everything after the number
+*)
 let test_no_characters_lost _ =
   (assert_equal "1 2 0 asdfasdf a + - -"
   @@
@@ -377,6 +384,11 @@ let test_no_characters_lost _ =
   | Some (exp, value) -> Int_data.to_string value ^ exp
   | None -> ""
 
+(*
+  Specification:
+    Expressions containing illegal characters
+    return Error
+*)
 let test_illegal_characters _ =
   (assert_equal "illegal character"
   @@
@@ -408,6 +420,11 @@ let test_illegal_characters _ =
   | Ok res -> Rat_data.to_string res
   | Error msg -> msg
 
+(*
+  Specification:
+    Well formed expressions but with illegal data types, 
+    like rationals in Int_eval, return Error 
+*)
 let test_illegal_types _ =
   (assert_equal "illegal character"
   @@

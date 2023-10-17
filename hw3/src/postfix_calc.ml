@@ -21,6 +21,7 @@ module Make_data (Ring : Ring.S) : Data with type t = Ring.t = struct
       |> not
     in
 
+    (* Split string by first separator *)
     let rec find_sep (h : string) (t : string) : string * string =
       if String.length t = 0 || is_separator t.[0] h then (h, t)
       else
@@ -29,11 +30,8 @@ module Make_data (Ring : Ring.S) : Data with type t = Ring.t = struct
           (String.sub t 1 (String.length t - 1))
     in
 
-    if String.length s = 0 then None
-    else if s.[0] = '+' || s.[0] = '*' then None
-    else
-      let h, t = find_sep "" s in
-      match Ring.of_string h with None -> None | Some n -> Some (t, n)
+    let h, t = find_sep "" s in
+    match Ring.of_string h with None -> None | Some n -> Some (t, n)
 end
 
 module Make_eval (Data : Data) : Eval with type t = Data.t = struct
@@ -46,22 +44,25 @@ module Make_eval (Data : Data) : Eval with type t = Data.t = struct
 
   let rec eval_rec (exp : string) (stk : t Stack.t) : (t, string) result =
     if String.length exp = 0 then
+      (* Base case: end of string *)
       if Stack.length stk > 1 || Stack.length stk == 0 then Error "unmatched"
       else Ok (Stack.top stk)
-    else if is_operator exp.[0] then
-      if Stack.length stk < 2 then Error "unmatched"
-      else
-        let a = Stack.pop stk in
-        let b = Stack.pop stk in
-        if exp.[0] = '+' then (
-          Stack.push (Data.( + ) a b) stk;
-          eval_rec (String.sub exp 1 (String.length exp - 1)) stk)
-        else (
-          Stack.push (Data.( * ) a b) stk;
-          eval_rec (String.sub exp 1 (String.length exp - 1)) stk)
     else if is_whitespace exp.[0] then
+      (* If whitespace, skip *)
       eval_rec (String.sub exp 1 (String.length exp - 1)) stk
+    else if is_operator exp.[0] && Stack.length stk < 2 then Error "unmatched"
+    else if is_operator exp.[0] then
+      (* If operator and enough values, pop and compute *)
+      let a = Stack.pop stk in
+      let b = Stack.pop stk in
+      if exp.[0] = '+' then (
+        Stack.push (Data.( + ) a b) stk;
+        eval_rec (String.sub exp 1 (String.length exp - 1)) stk)
+      else (
+        Stack.push (Data.( * ) a b) stk;
+        eval_rec (String.sub exp 1 (String.length exp - 1)) stk)
     else
+      (* Try to read number off string *)
       match Data.next exp with
       | Some (new_exp, value) ->
           Stack.push value stk;
@@ -85,9 +86,11 @@ end)
 module Rat_data = Make_data (struct
   type t = int * int
 
+  (* Compute gcd of two integers *)
   let rec gcd ((a, b) : t) : int =
     if a < b then gcd (b, a) else if b = 0 then a else gcd (b, a mod b)
 
+  (* Reduce fraction using gcd *)
   let reduce ((p, q) : t) : int * int =
     let d = if p < 0 then gcd (-p, q) else gcd (p, q) in
     (Int.div p d, Int.div q d)
@@ -99,8 +102,10 @@ module Rat_data = Make_data (struct
 
   let of_string (s : string) : t option =
     match String.index_opt s '/' with
+    (* Read rational with no / *)
     | None -> (
         match int_of_string_opt s with Some a -> Some (a, 1) | None -> None)
+    (* If / found, read numerator and denominator *)
     | Some i -> (
         match
           ( String.sub s 0 i |> int_of_string_opt,
