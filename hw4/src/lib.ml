@@ -1,12 +1,3 @@
-(*
-
-FPSE Assignment 4
- 
-Name                  : 
-List of Collaborators :
-
-*)
-
 open Core
 
 (*
@@ -167,3 +158,28 @@ open Core
   If you create any other files for this assignment, then please edit the top-level `dune` file to add them to the deps and zip and submit them.
 
 *)
+
+open Core
+
+module type D = sig
+  type item_list
+  type t
+
+  val make_distribution : item_list -> int -> t
+  val sample_random_sequence : int -> item_list
+end
+
+
+module Distribution (Item: Map.Key) : D with type item_list = Item.t list = struct
+  module Item_list (Item: Map.Key) : Map.Key = struct
+    type t = Item.t list [@@deriving compare, sexp]
+  end
+
+  module Item_map = Map.Make (Item_list)
+
+  type item_list = Item_list.t
+  type t = Item_map.t
+
+  let make_distribution (list: item_list) (n: int) : t = Item_map.Empty
+  let sample_random_sequence (n: int) : item_list = []
+end

@@ -20,7 +20,7 @@ module type S = sig
   val of_int : int -> t option
   val to_int : t -> int
 end
-
+o
 module type Params = sig
   val op : int -> int -> int
   val n : int
