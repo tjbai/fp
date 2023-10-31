@@ -1,8 +1,12 @@
 open Core
 
+module type R = sig
+  val int : int -> int
+end
+
 module type D = sig
-  module Item_list : Map.Key
-  module Item_map : Map.S
+  module Ngram_map : Map.S
+  module Random : R
 
   type item_list
   type t
@@ -11,4 +15,5 @@ module type D = sig
   val sample_random_sequence : int -> item_list
 end
 
-module Distribution (Item: Map.Key) : D with type item_list = Item.t list
+module Distribution (Item : Map.Key) (Random : R) :
+  D with type item_list = Item.t list with module Random = Random

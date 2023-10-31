@@ -159,9 +159,14 @@ open Core
 
 *)
 
-open Core
+module type R = sig
+  val int : int -> int
+end
 
 module type D = sig
+  module Ngram_map : Map.S
+  module Random : R
+
   type item_list
   type t
 
@@ -169,17 +174,44 @@ module type D = sig
   val sample_random_sequence : int -> item_list
 end
 
-
-module Distribution (Item: Map.Key) : D with type item_list = Item.t list = struct
-  module Item_list (Item: Map.Key) : Map.Key = struct
+module Distribution (Item : Map.Key) (Random : R) : D = struct
+  module Item_list = struct
     type t = Item.t list [@@deriving compare, sexp]
+
+    let empty : t = []
+    let add (ls : t) (item : Item.t) : t = ls @ [ item ]
+    let length (ls : t) : int = List.length ls
+
+    let head (ls : t) : (Item.t * t) option =
+      match ls with [] -> None | hd :: tl -> Some (hd, tl)
   end
 
-  module Item_map = Map.Make (Item_list)
+  module Ngram_map = Core.Map.Make (Item_list)
+  module Random = Random
 
   type item_list = Item_list.t
-  type t = Item_map.t
+  type t = Item.t list Ngram_map.t
 
-  let make_distribution (list: item_list) (n: int) : t = Item_map.Empty
-  let sample_random_sequence (n: int) : item_list = []
+  let make_distribution (list : item_list) (n : int) : t =
+    let rec aux (ls : item_list) (context : item_list) (map : t) =
+      match Item_list.head ls with
+      | None -> map
+      | Some (hd, tl) -> (
+          if Item_list.length context < n - 1 then
+            aux tl (Item_list.add context hd) map
+          else
+            match Item_list.head context with
+            | None -> assert false
+            | Some (_, context_tl) ->
+                aux tl
+                  (Item_list.add context_tl hd)
+                  (Map.add_exn map ~key:context ~data:[]))
+    in
+    aux list [] Ngram_map.empty
+
+  let sample_random_sequence (n : int) : item_list = match n with _ -> []
 end
+
+(* module StringDistribution = Distribution (String) (Random) *)
+
+(* let () = StringDistribution.make_distribution (["bruh";"bruh2"]) 2 *)
