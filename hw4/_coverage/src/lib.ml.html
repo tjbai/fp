@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>lib.ml &mdash; Coverage report</title>
+    <meta name="description" content="96.43% coverage in src/lib.ml">
+    <link rel="stylesheet" href="../coverage.css"/>
+    <script src="../highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1>
+        <a href="../index.html">
+          <span class="dirname">src/</span>lib.ml
+        </a>
+      </h1>
+      <h2>96.43%</h2>
+    </div>
+    <div id="navbar">
+      <span class="some-visited" style="bottom:20.75%"></span>
+    </div>
+    <div id="report">
+      <div id="lines-layer">
+        <pre>
+<a id="L1"></a><span > </span>
+<a id="L2"></a><span > </span>
+<a id="L3"></a><span > </span>
+<a id="L4"></a><span > </span>
+<a id="L5"></a><span > </span>
+<a id="L6"></a><span > </span>
+<a id="L7"></a><span > </span>
+<a id="L8"></a><span > </span>
+<a id="L9"></a><span > </span>
+<a id="L10"></a><span > </span>
+<a id="L11"></a><span > </span>
+<a id="L12"></a><span > </span>
+<a id="L13"></a><span > </span>
+<a id="L14"></a><span > </span>
+<a id="L15"></a><span > </span>
+<a id="L16"></a><span > </span>
+<a id="L17"></a><span > </span>
+<a id="L18"></a><span > </span>
+<a id="L19"></a><span > </span>
+<a id="L20"></a><span > </span>
+<a id="L21"></a><span > </span>
+<a id="L22"></a><span > </span>
+<a id="L23"></a><span > </span>
+<a id="L24"></a><span > </span>
+<a id="L25"></a><span > </span>
+<a id="L26"></a><span > </span>
+<a id="L27"></a><span > </span>
+<a id="L28"></a><span > </span>
+<a id="L29"></a><span > </span>
+<a id="L30"></a><span > </span>
+<a id="L31"></a><span > </span>
+<a id="L32"></a><span > </span>
+<a id="L33"></a><span > </span>
+<a id="L34"></a><span > </span>
+<a id="L35"></a><span > </span>
+<a id="L36"></a><span > </span>
+<a id="L37"></a><span > </span>
+<a id="L38"></a><span > </span>
+<a id="L39"></a><span > </span>
+<a id="L40"></a><span > </span>
+<a id="L41"></a><span > </span>
+<a id="L42"></a><span > </span>
+<a id="L43"></a><span > </span>
+<a id="L44"></a><span > </span>
+<a id="L45"></a><span > </span>
+<a id="L46"></a><span > </span>
+<a id="L47"></a><span > </span>
+<a id="L48"></a><span > </span>
+<a id="L49"></a><span > </span>
+<a id="L50"></a><span > </span>
+<a id="L51"></a><span > </span>
+<a id="L52"></a><span > </span>
+<a id="L53"></a><span > </span>
+<a id="L54"></a><span > </span>
+<a id="L55"></a><span > </span>
+<a id="L56"></a><span > </span>
+<a id="L57"></a><span > </span>
+<a id="L58"></a><span > </span>
+<a id="L59"></a><span > </span>
+<a id="L60"></a><span > </span>
+<a id="L61"></a><span > </span>
+<a id="L62"></a><span > </span>
+<a id="L63"></a><span > </span>
+<a id="L64"></a><span > </span>
+<a id="L65"></a><span > </span>
+<a id="L66"></a><span > </span>
+<a id="L67"></a><span > </span>
+<a id="L68"></a><span > </span>
+<a id="L69"></a><span > </span>
+<a id="L70"></a><span > </span>
+<a id="L71"></a><span > </span>
+<a id="L72"></a><span > </span>
+<a id="L73"></a><span > </span>
+<a id="L74"></a><span > </span>
+<a id="L75"></a><span > </span>
+<a id="L76"></a><span > </span>
+<a id="L77"></a><span > </span>
+<a id="L78"></a><span > </span>
+<a id="L79"></a><span > </span>
+<a id="L80"></a><span > </span>
+<a id="L81"></a><span > </span>
+<a id="L82"></a><span > </span>
+<a id="L83"></a><span > </span>
+<a id="L84"></a><span > </span>
+<a id="L85"></a><span > </span>
+<a id="L86"></a><span > </span>
+<a id="L87"></a><span > </span>
+<a id="L88"></a><span > </span>
+<a id="L89"></a><span > </span>
+<a id="L90"></a><span > </span>
+<a id="L91"></a><span > </span>
+<a id="L92"></a><span > </span>
+<a id="L93"></a><span > </span>
+<a id="L94"></a><span > </span>
+<a id="L95"></a><span > </span>
+<a id="L96"></a><span > </span>
+<a id="L97"></a><span > </span>
+<a id="L98"></a><span > </span>
+<a id="L99"></a><span > </span>
+<a id="L100"></a><span > </span>
+<a id="L101"></a><span > </span>
+<a id="L102"></a><span > </span>
+<a id="L103"></a><span > </span>
+<a id="L104"></a><span > </span>
+<a id="L105"></a><span > </span>
+<a id="L106"></a><span > </span>
+<a id="L107"></a><span > </span>
+<a id="L108"></a><span > </span>
+<a id="L109"></a><span > </span>
+<a id="L110"></a><span > </span>
+<a id="L111"></a><span > </span>
+<a id="L112"></a><span > </span>
+<a id="L113"></a><span > </span>
+<a id="L114"></a><span > </span>
+<a id="L115"></a><span > </span>
+<a id="L116"></a><span > </span>
+<a id="L117"></a><span > </span>
+<a id="L118"></a><span > </span>
+<a id="L119"></a><span > </span>
+<a id="L120"></a><span > </span>
+<a id="L121"></a><span > </span>
+<a id="L122"></a><span > </span>
+<a id="L123"></a><span > </span>
+<a id="L124"></a><span > </span>
+<a id="L125"></a><span > </span>
+<a id="L126"></a><span > </span>
+<a id="L127"></a><span > </span>
+<a id="L128"></a><span > </span>
+<a id="L129"></a><span > </span>
+<a id="L130"></a><span > </span>
+<a id="L131"></a><span > </span>
+<a id="L132"></a><span > </span>
+<a id="L133"></a><span > </span>
+<a id="L134"></a><span > </span>
+<a id="L135"></a><span > </span>
+<a id="L136"></a><span > </span>
+<a id="L137"></a><span > </span>
+<a id="L138"></a><span > </span>
+<a id="L139"></a><span > </span>
+<a id="L140"></a><span > </span>
+<a id="L141"></a><span > </span>
+<a id="L142"></a><span > </span>
+<a id="L143"></a><span > </span>
+<a id="L144"></a><span > </span>
+<a id="L145"></a><span > </span>
+<a id="L146"></a><span > </span>
+<a id="L147"></a><span > </span>
+<a id="L148"></a><span > </span>
+<a id="L149"></a><span > </span>
+<a id="L150"></a><span > </span>
+<a id="L151"></a><span > </span>
+<a id="L152"></a><span > </span>
+<a id="L153"></a><span > </span>
+<a id="L154"></a><span > </span>
+<a id="L155"></a><span > </span>
+<a id="L156"></a><span > </span>
+<a id="L157"></a><span > </span>
+<a id="L158"></a><span > </span>
+<a id="L159"></a><span > </span>
+<a id="L160"></a><span > </span>
+<a id="L161"></a><span > </span>
+<a id="L162"></a><span > </span>
+<a id="L163"></a><span > </span>
+<a id="L164"></a><span > </span>
+<a id="L165"></a><span > </span>
+<a id="L166"></a><span > </span>
+<a id="L167"></a><span > </span>
+<a id="L168"></a><span class="some-visited"> </span>
+<a id="L169"></a><span > </span>
+<a id="L170"></a><span > </span>
+<a id="L171"></a><span > </span>
+<a id="L172"></a><span > </span>
+<a id="L173"></a><span > </span>
+<a id="L174"></a><span > </span>
+<a id="L175"></a><span > </span>
+<a id="L176"></a><span > </span>
+<a id="L177"></a><span class="visited"> </span>
+<a id="L178"></a><span > </span>
+<a id="L179"></a><span > </span>
+<a id="L180"></a><span class="visited"> </span>
+<a id="L181"></a><span class="visited"> </span>
+<a id="L182"></a><span class="visited"> </span>
+<a id="L183"></a><span class="visited"> </span>
+<a id="L184"></a><span class="visited"> </span>
+<a id="L185"></a><span > </span>
+<a id="L186"></a><span class="visited"> </span>
+<a id="L187"></a><span > </span>
+<a id="L188"></a><span class="visited"> </span>
+<a id="L189"></a><span > </span>
+<a id="L190"></a><span class="visited"> </span>
+<a id="L191"></a><span > </span>
+<a id="L192"></a><span > </span>
+<a id="L193"></a><span > </span>
+<a id="L194"></a><span > </span>
+<a id="L195"></a><span > </span>
+<a id="L196"></a><span > </span>
+<a id="L197"></a><span > </span>
+<a id="L198"></a><span class="visited"> </span>
+<a id="L199"></a><span class="visited"> </span>
+<a id="L200"></a><span > </span>
+<a id="L201"></a><span class="visited"> </span>
+<a id="L202"></a><span class="visited"> </span>
+<a id="L203"></a><span class="visited"> </span>
+<a id="L204"></a><span > </span>
+<a id="L205"></a><span class="visited"> </span>
+<a id="L206"></a><span > </span>
+<a id="L207"></a><span class="visited"> </span>
+<a id="L208"></a><span > </span>
+<a id="L209"></a><span > </span>
+<a id="L210"></a><span > </span>
+<a id="L211"></a><span > </span>
+<a id="L212"></a><span > </span>
+</pre>
+      </div>
+      <div id="text-layer">
+        <pre id="line-numbers">
+<a href="#L1">  1</a>
+<a href="#L2">  2</a>
+<a href="#L3">  3</a>
+<a href="#L4">  4</a>
+<a href="#L5">  5</a>
+<a href="#L6">  6</a>
+<a href="#L7">  7</a>
+<a href="#L8">  8</a>
+<a href="#L9">  9</a>
+<a href="#L10"> 10</a>
+<a href="#L11"> 11</a>
+<a href="#L12"> 12</a>
+<a href="#L13"> 13</a>
+<a href="#L14"> 14</a>
+<a href="#L15"> 15</a>
+<a href="#L16"> 16</a>
+<a href="#L17"> 17</a>
+<a href="#L18"> 18</a>
+<a href="#L19"> 19</a>
+<a href="#L20"> 20</a>
+<a href="#L21"> 21</a>
+<a href="#L22"> 22</a>
+<a href="#L23"> 23</a>
+<a href="#L24"> 24</a>
+<a href="#L25"> 25</a>
+<a href="#L26"> 26</a>
+<a href="#L27"> 27</a>
+<a href="#L28"> 28</a>
+<a href="#L29"> 29</a>
+<a href="#L30"> 30</a>
+<a href="#L31"> 31</a>
+<a href="#L32"> 32</a>
+<a href="#L33"> 33</a>
+<a href="#L34"> 34</a>
+<a href="#L35"> 35</a>
+<a href="#L36"> 36</a>
+<a href="#L37"> 37</a>
+<a href="#L38"> 38</a>
+<a href="#L39"> 39</a>
+<a href="#L40"> 40</a>
+<a href="#L41"> 41</a>
+<a href="#L42"> 42</a>
+<a href="#L43"> 43</a>
+<a href="#L44"> 44</a>
+<a href="#L45"> 45</a>
+<a href="#L46"> 46</a>
+<a href="#L47"> 47</a>
+<a href="#L48"> 48</a>
+<a href="#L49"> 49</a>
+<a href="#L50"> 50</a>
+<a href="#L51"> 51</a>
+<a href="#L52"> 52</a>
+<a href="#L53"> 53</a>
+<a href="#L54"> 54</a>
+<a href="#L55"> 55</a>
+<a href="#L56"> 56</a>
+<a href="#L57"> 57</a>
+<a href="#L58"> 58</a>
+<a href="#L59"> 59</a>
+<a href="#L60"> 60</a>
+<a href="#L61"> 61</a>
+<a href="#L62"> 62</a>
+<a href="#L63"> 63</a>
+<a href="#L64"> 64</a>
+<a href="#L65"> 65</a>
+<a href="#L66"> 66</a>
+<a href="#L67"> 67</a>
+<a href="#L68"> 68</a>
+<a href="#L69"> 69</a>
+<a href="#L70"> 70</a>
+<a href="#L71"> 71</a>
+<a href="#L72"> 72</a>
+<a href="#L73"> 73</a>
+<a href="#L74"> 74</a>
+<a href="#L75"> 75</a>
+<a href="#L76"> 76</a>
+<a href="#L77"> 77</a>
+<a href="#L78"> 78</a>
+<a href="#L79"> 79</a>
+<a href="#L80"> 80</a>
+<a href="#L81"> 81</a>
+<a href="#L82"> 82</a>
+<a href="#L83"> 83</a>
+<a href="#L84"> 84</a>
+<a href="#L85"> 85</a>
+<a href="#L86"> 86</a>
+<a href="#L87"> 87</a>
+<a href="#L88"> 88</a>
+<a href="#L89"> 89</a>
+<a href="#L90"> 90</a>
+<a href="#L91"> 91</a>
+<a href="#L92"> 92</a>
+<a href="#L93"> 93</a>
+<a href="#L94"> 94</a>
+<a href="#L95"> 95</a>
+<a href="#L96"> 96</a>
+<a href="#L97"> 97</a>
+<a href="#L98"> 98</a>
+<a href="#L99"> 99</a>
+<a href="#L100">100</a>
+<a href="#L101">101</a>
+<a href="#L102">102</a>
+<a href="#L103">103</a>
+<a href="#L104">104</a>
+<a href="#L105">105</a>
+<a href="#L106">106</a>
+<a href="#L107">107</a>
+<a href="#L108">108</a>
+<a href="#L109">109</a>
+<a href="#L110">110</a>
+<a href="#L111">111</a>
+<a href="#L112">112</a>
+<a href="#L113">113</a>
+<a href="#L114">114</a>
+<a href="#L115">115</a>
+<a href="#L116">116</a>
+<a href="#L117">117</a>
+<a href="#L118">118</a>
+<a href="#L119">119</a>
+<a href="#L120">120</a>
+<a href="#L121">121</a>
+<a href="#L122">122</a>
+<a href="#L123">123</a>
+<a href="#L124">124</a>
+<a href="#L125">125</a>
+<a href="#L126">126</a>
+<a href="#L127">127</a>
+<a href="#L128">128</a>
+<a href="#L129">129</a>
+<a href="#L130">130</a>
+<a href="#L131">131</a>
+<a href="#L132">132</a>
+<a href="#L133">133</a>
+<a href="#L134">134</a>
+<a href="#L135">135</a>
+<a href="#L136">136</a>
+<a href="#L137">137</a>
+<a href="#L138">138</a>
+<a href="#L139">139</a>
+<a href="#L140">140</a>
+<a href="#L141">141</a>
+<a href="#L142">142</a>
+<a href="#L143">143</a>
+<a href="#L144">144</a>
+<a href="#L145">145</a>
+<a href="#L146">146</a>
+<a href="#L147">147</a>
+<a href="#L148">148</a>
+<a href="#L149">149</a>
+<a href="#L150">150</a>
+<a href="#L151">151</a>
+<a href="#L152">152</a>
+<a href="#L153">153</a>
+<a href="#L154">154</a>
+<a href="#L155">155</a>
+<a href="#L156">156</a>
+<a href="#L157">157</a>
+<a href="#L158">158</a>
+<a href="#L159">159</a>
+<a href="#L160">160</a>
+<a href="#L161">161</a>
+<a href="#L162">162</a>
+<a href="#L163">163</a>
+<a href="#L164">164</a>
+<a href="#L165">165</a>
+<a href="#L166">166</a>
+<a href="#L167">167</a>
+<a href="#L168">168</a>
+<a href="#L169">169</a>
+<a href="#L170">170</a>
+<a href="#L171">171</a>
+<a href="#L172">172</a>
+<a href="#L173">173</a>
+<a href="#L174">174</a>
+<a href="#L175">175</a>
+<a href="#L176">176</a>
+<a href="#L177">177</a>
+<a href="#L178">178</a>
+<a href="#L179">179</a>
+<a href="#L180">180</a>
+<a href="#L181">181</a>
+<a href="#L182">182</a>
+<a href="#L183">183</a>
+<a href="#L184">184</a>
+<a href="#L185">185</a>
+<a href="#L186">186</a>
+<a href="#L187">187</a>
+<a href="#L188">188</a>
+<a href="#L189">189</a>
+<a href="#L190">190</a>
+<a href="#L191">191</a>
+<a href="#L192">192</a>
+<a href="#L193">193</a>
+<a href="#L194">194</a>
+<a href="#L195">195</a>
+<a href="#L196">196</a>
+<a href="#L197">197</a>
+<a href="#L198">198</a>
+<a href="#L199">199</a>
+<a href="#L200">200</a>
+<a href="#L201">201</a>
+<a href="#L202">202</a>
+<a href="#L203">203</a>
+<a href="#L204">204</a>
+<a href="#L205">205</a>
+<a href="#L206">206</a>
+<a href="#L207">207</a>
+<a href="#L208">208</a>
+<a href="#L209">209</a>
+<a href="#L210">210</a>
+<a href="#L211">211</a>
+<a href="#L212">212</a>
+</pre>
+<pre><code class="ocaml">open Core
+
+(*
+  --------------
+  BROAD OVERVIEW
+  --------------
+
+  In this assignment you will implement a simple n-gram model.
+  
+  Part I consists of some library routines, and Part II will be a command-line tool to build and use an n-gram model which makes use of your library.
+
+  Using the n-gram model of sequences and probabilities, we'll take in some sequence of items, and then use it as a basis to generate more similar sequences (for example, sentences of words, lists of numbers, etc.), or evaluate the likelihood of seeing particular sequences.
+
+  The comments in this file will describe the expectations for Part I. Before you code here, we suggest you also read the comments in the Part II file to better understand the end goal and cater your code to that goal. We understand that it's a lot to read, but it's better to read it here than to have to scrape student questions on Courselore.
+
+
+  ----------
+  BACKGROUND
+  ----------
+
+  The general intuition is simple: if we want to predict what comes next in a sequence of items, we can probably do so on the basis of the elements which preceded it. Moreover, we can 
+  probably ignore parts of the sequence which came _far_ before the element we want to predict and focus our attention on the immediately previous couple of items.
+
+  Consider sentences of words in English text, a very common type of sequence to apply this approach to. If we are given that the word we want to predict came after:
+  
+  "take this boat for a spin out on the" ???
+
+  Then we could say that "water" is more likely than "town" to follow. If we have less context, say only 2 words:
+
+  "on the" ???
+
+  We will naturally make a poorer approximation of the true distribution, but it may be sufficient for some purposes anyway and will be easier to estimate. How can we estimate the actual distribution of words efficiently, then?
+  
+  We will need to take in some observed sequence of words or tokens, called a _corpus_.  Let's say we want to keep two words of context when predicting what comes next, based on the provided corpus. Then we can 
+  just keep track of every 3-tuple of consecutive words in the input, and count how often they appear.
+
+  For example, say we observe the triples (i.e. 3-grams)
+
+  ("take", "this", "boat"), ("this", "boat", "for"), ... ("on", "the", "water").
+
+  Then, if we index these properly, we can predict what should follow ("on", "the") by just sampling randomly from among all the tuples which started with that prefix, and using the last element of the tuple as our prediction.  Naturally, words which appear more frequently in the context specified should then be given more weight, and words which do not appear in our corpus after the given sequence will not be chosen at all, so our prediction should be a reasonable estimate for the empirical distribution.
+
+  If we instead count 5-tuples rather than 3-tuples, we can make better predictions with the greater context, which will then more closely match the true sequence properties. However, we will also be able to observe fewer unique 5-tuples overall than 3-tuples, which will mean we need greater amounts of data to properly use a larger n-gram size.
+
+
+  Feel free to read these useful resources to better understand n-grams:
+  - https://blog.xrds.acm.org/2017/10/introduction-n-grams-need/
+  - https://web.stanford.edu/~jurafsky/slp3/slides/LM_4.pdf
+  - https://medium.com/mti-technology/n-gram-language-model-b7c2fc322799
+
+  In this document we follow the standard terminology (which can be confusing) and refer to "n-grams" when it seems like we might mean "(n-1)-grams" since there are n-1 items of prefix in an n-gram.  For example, a 3-gram has two items of prefix and the prefix plus the one-item of prediction gives a 3-gram.
+
+  ------------
+  EXPECTATIONS
+  ------------
+
+  The library code in Part I will support the main functionality for Part II. Your submission for Part I might change during your Part II submission to better accommodate the final functionality. This assignment is split into two parts to help you get started early.
+
+  There are no autograder tests for this part. Gradescope will run your own tests in `tests/tests.ml` to ensure they pass, and the course staff will thoroughly inspect your code for good code style and a strong foundation heading into Part II. It will also be inspected to make sure you meet all requirements specified in this doc.
+
+  There are are few implementation expectations:
+  * Your code is functional with no mutation.
+  * You use functors adequately.
+  * You choose efficient data structures.
+  * You write plenty of helper functions to keep your code short and readable.
+  * Your code is well-tested with high code coverage.
+  * You have a `lib.mli` file to provide signatures and expose public members for testing.
+  * You meet the functionality requirements specified below.
+
+
+  --------------------------
+  FUNCTIONALITY REQUIREMENTS
+  --------------------------
+
+  You will design a functor to create a "distribution" module. The argument of the functor will be a module which specifies the type of items in the sequence/distribution (refer to "Broad Overview" section above). These might be strings or ints, or anything that is comparable (but the standard usage in natural language is strings). An appropriate signature would be `Item : Core.Map.Key` as the functor argument.
+
+  The functor will return a module that has a type to represent the distribution. The "distribution" is a mapping from an n-gram to a multiset of items that follow that n-gram in the given sequence. For example:
+    Suppose `Item` = `Int` is the functor argument, and the input sequence of integers is
+      [1; 2; 3; 4; 4; 4; 2; 2; 3; 1]
+    where the model uses bigrams (2-grams) to get one item of context. Then the distribution is
+      { 
+        [1] -&gt; {2}; 
+        [2] -&gt; {3; 2; 3};
+        [3] -&gt; {4; 1};
+        [4] -&gt; {4; 4; 2};
+         |        |
+         |        \------------------------ ...was followed by each of these elements
+         \-- this sequence (of length 1 in this example)  ...
+      }
+    If there are instead two items of context because the model used 3-grams, then the distribution is
+      {
+        [1; 2] -&gt; {3};
+        [2; 3] -&gt; {4; 1};
+        [3; 4] -&gt; {4};
+        [4; 4] -&gt; {4; 2};
+        [4; 2] -&gt; {2};
+        [2; 2] -&gt; {3};
+          |        |
+          |        \------- ...was followed by each of these elements
+          \-- this sequence...
+      }
+
+  We think it's a great implementation choice to use `Core.Map` to map the n-grams to their multiset of right contexts. This will be a good exercise in using module signatures and functors.
+
+  The module will be able to make a distribution from a given input sequence (i.e. list). For example
+    ```
+    module Distribution (Item : Map.Key) = struct
+      ...
+      val make_distribution : Item.t list -&gt; n:int -&gt; t
+      ...
+    end
+    ```
+  You don't have to follow these names or signatures, but you do have to make a functor. Points will be deducted from your submission if you do not use a functor.
+
+  Further, using this distribution, you will have a function called `sample_random_sequence` that takes an input n-gram and creates a k-length sequence that is randomly sampled from the distribution using the n-gram as starting context. The sequence might terminate before length k, if necessary.
+
+  We will walk you through one example of this with the above distribution and two items of context.
+    Say the input n-gram is [1; 2], and we want a 5-length sequence.
+    Then the only possible following item is 3 (because [1; 2] -&gt; {3} above), and the running sequence is
+      [1; 2; 3].
+    Now the context is
+      [2; 3].
+    Look at the above distribution to see what can follow this context (here, [2; 3] -&gt; {4; 1}). So we sample from
+      {4; 1}
+    at random. Say this comes out as 4. So the running sequence is now
+      [1; 2; 3; 4]
+    and the new context is
+      [3; 4].
+    So we sample from
+      {4}
+    which makes the running sequence
+      [1; 2; 3; 4; 4]
+    which has length k = 5, and we're done because we hit the desired length.
+
+    If from {4; 1} we pulled the item 1, then the sequence would have become [1; 2; 3; 1], and the new context is [3; 1], which never appears in the original sequence, and hence there's no appropriate next item, so we stop at length 4, which is short of k = 5. That's okay, and it's a valid output.
+
+  In summary, the two functionality requirements for Part I are:
+  * A functor that has a type to represent a distribution, where the underlying type of the distribution is provided as the functor argument.
+  * A way to create a distribution from an input list.
+  * A function called `sample_random_sequence` to randomly sample from the distribution until it hits the desired length, or until there is nothing to sample. We'd like it to be called example `sample_random_sequence` so we can find it easily when grading.
+  * You have created tests to thoroughly test your code according to the specifications in this document, and all of your tests pass.
+
+
+  ----
+  TIPS
+  ----
+
+  If you have a module `Item : Map.Key`, see how you can make a module `Item_list : Map.Key` where `Item_list.t = Item.t list`. This way you can map the n-grams to their context using a map (which is an appropriately efficient data structure).
+
+  A list or a `Core.Bag` (i.e. multiset) might be an appropriate way to store the right contexts. A `Core.Set` won't work because that doesn't consider the weight of the item; more common right contexts are more likely to be sampled (note the one-item-of-context example above).
+
+  Because this library uses randomness, you might like to pass in a module as a functor argument that provides the random numbers. During testing, you pass it a module that gives predictable numbers, but during regular usage in Part II, you pass it the real `Random` module.
+
+    Your code will likely use the `Random` module only by calling a function `Random.int : int -&gt; int`, so for testing you can provide any module that satisfies the signature `sig val int : int -&gt; int end`.
+
+  If the requirement is not stated exactly in this description, then you have room to implement it how you like, or you may meet different requirements. You only need to pass your own tests and appropriately prepare for Part II.
+
+  If you create any other files for this assignment, then please edit the top-level `dune` file to add them to the deps and zip and submit them.
+
+*)
+
+module type R = sig
+  val int : int -&gt; int
+end
+
+module Distribution (Item : Map.Key) (Random : R) = struct
+  module Item_list : Map.Key with type t = Item.t list = struct
+    <span data-count="0">t</span>ype t = <span data-count="191">I</span>tem.t <span data-count="160">l</span>ist [@@deriving compare, sexp]
+  end
+
+  module Ngram_map = Map.Make (Item_list)
+  module Random = Random
+
+  type t = Item.t list Ngram_map.t
+
+  let to_list (ngrams : t) : (Item.t list * Item.t list) list =
+    <span data-count="11">n</span>grams |&gt; Map.to_sequenc<span data-count="11">e</span> |&gt; Sequence.to_list
+
+  let make_distribution (list : Item.t list) (n : int) : t =
+    <span data-count="14">l</span>et rec aux (ls : Item.t list) (context : Item.t list) (ngrams : t) : t =
+      <span data-count="106">m</span>atch ls with
+      | <span data-count="14">[</span>] -&gt; ngrams
+      | <span data-count="92">h</span>d :: tl -&gt;
+          if List.lengt<span data-count="92">h</span> context &lt; n - 1 then <span data-count="19">a</span>ux tl (context @ [ hd ]) ngrams
+          else
+            <span data-count="73">l</span>et updated_ngrams =
+              Map.update ngrams context ~f:(fun result -&gt;
+                  <span data-count="73">m</span>atch result with <span data-count="25">S</span>ome cur -&gt; hd :: cur | <span data-count="48">N</span>one -&gt; [ hd ])
+            in
+            <span data-count="73">l</span>et updated_context = List.tl_ex<span data-count="73">n</span> context @ [ hd ] in
+            aux tl updated_context updated_ngrams
+    in
+
+    aux list [] Ngram_map.empty
+
+  let sample_random_sequence (ngrams : t) (context : Item.t list) (n : int) :
+      Item.t list =
+    <span data-count="7">l</span>et rec aux (context : Item.t list) (result : Item.t list) : Item.t list =
+      <span data-count="25">i</span>f List.lengt<span data-count="25">h</span> result = n then <span data-count="4">r</span>esult
+      else
+        <span data-count="21">m</span>atch Map.find ngrams context with
+        | <span data-count="3">N</span>one -&gt; result
+        | <span data-count="18">S</span>ome cands -&gt;
+            let new_item =
+              List.nth_exn cands (List.lengt<span data-count="18">h</span> cands |&gt; Random.in<span data-count="18">t</span>)
+            in
+            <span data-count="18">l</span>et updated_context = List.tl_ex<span data-count="18">n</span> context @ [ new_item ] in
+            let updated_result = result @ [ new_item ] in
+            aux updated_context updated_result
+    in
+    aux context []
+end
+</code></pre>
+      </div>
+    </div>
+    <script src="../coverage.js"></script>
+  </body>
+</html>

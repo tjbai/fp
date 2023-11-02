@@ -3,7 +3,7 @@
  (modules lib)
  (libraries core)
  (preprocess
-  (pps ppx_jane)))
+  (pps ppx_jane bisect_ppx)))
 
 (executable
  (name ngrams)
