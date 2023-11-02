@@ -163,55 +163,50 @@ module type R = sig
   val int : int -> int
 end
 
-module type D = sig
-  module Ngram_map : Map.S
-  module Random : R
-
-  type item_list
-  type t
-
-  val make_distribution : item_list -> int -> t
-  val sample_random_sequence : int -> item_list
-end
-
-module Distribution (Item : Map.Key) (Random : R) : D = struct
-  module Item_list = struct
+module Distribution (Item : Map.Key) (Random : R) = struct
+  module Item_list : Map.Key with type t = Item.t list = struct
     type t = Item.t list [@@deriving compare, sexp]
-
-    let empty : t = []
-    let add (ls : t) (item : Item.t) : t = ls @ [ item ]
-    let length (ls : t) : int = List.length ls
-
-    let head (ls : t) : (Item.t * t) option =
-      match ls with [] -> None | hd :: tl -> Some (hd, tl)
   end
 
-  module Ngram_map = Core.Map.Make (Item_list)
+  module Ngram_map = Map.Make (Item_list)
   module Random = Random
 
-  type item_list = Item_list.t
   type t = Item.t list Ngram_map.t
 
-  let make_distribution (list : item_list) (n : int) : t =
-    let rec aux (ls : item_list) (context : item_list) (map : t) =
-      match Item_list.head ls with
-      | None -> map
-      | Some (hd, tl) -> (
-          if Item_list.length context < n - 1 then
-            aux tl (Item_list.add context hd) map
+  let to_list (ngrams : t) : (Item.t list * Item.t list) list =
+    ngrams |> Map.to_sequence |> Sequence.to_list
+
+  let make_distribution (list : Item.t list) (n : int) : t =
+    let rec aux (ls : Item.t list) (context : Item.t list) (ngrams : t) : t =
+      match ls with
+      | [] -> ngrams
+      | hd :: tl ->
+          if List.length context < n - 1 then aux tl (context @ [ hd ]) ngrams
           else
-            match Item_list.head context with
-            | None -> assert false
-            | Some (_, context_tl) ->
-                aux tl
-                  (Item_list.add context_tl hd)
-                  (Map.add_exn map ~key:context ~data:[]))
+            let updated_ngrams =
+              Map.update ngrams context ~f:(fun result ->
+                  match result with Some cur -> hd :: cur | None -> [ hd ])
+            in
+            let updated_context = List.tl_exn context @ [ hd ] in
+            aux tl updated_context updated_ngrams
     in
+
     aux list [] Ngram_map.empty
 
-  let sample_random_sequence (n : int) : item_list = match n with _ -> []
+  let sample_random_sequence (ngrams : t) (context : Item.t list) (n : int) :
+      Item.t list =
+    let rec aux (context : Item.t list) (result : Item.t list) : Item.t list =
+      if List.length result = n then result
+      else
+        match Map.find ngrams context with
+        | None -> result
+        | Some cands ->
+            let new_item =
+              List.nth_exn cands (List.length cands |> Random.int)
+            in
+            let updated_context = List.tl_exn context @ [ new_item ] in
+            let updated_result = result @ [ new_item ] in
+            aux updated_context updated_result
+    in
+    aux context []
 end
-
-(* module StringDistribution = Distribution (String) (Random) *)
-
-(* let () = StringDistribution.make_distribution (["bruh";"bruh2"]) 2 *)
