@@ -14,17 +14,17 @@ module IntDistribution = Distribution (IntItem) (DeterministicRandom)
 open IntDistribution
 
 let test_bigram_distribution _ =
-  assert_equal [] @@ (make_distribution [] 2 |> to_list);
+  assert_equal [] @@ (make_distribution 2 [] |> to_list);
 
   assert_equal [ ([ 1 ], [ 1; 1; 1; 1 ]) ]
-  @@ (make_distribution [ 1; 1; 1; 1; 1 ] 2 |> to_list);
+  @@ (make_distribution 2 [ 1; 1; 1; 1; 1 ] |> to_list);
 
   assert_equal [ ([ 1 ], [ 2; 1; 1; 1; 1 ]) ]
-  @@ (make_distribution [ 1; 1; 1; 1; 1; 2 ] 2 |> to_list);
+  @@ (make_distribution 2 [ 1; 1; 1; 1; 1; 2 ] |> to_list);
 
   assert_equal
     [ ([ 1 ], [ 2 ]); ([ 2 ], [ 3 ]); ([ 3 ], [ 4 ]); ([ 4 ], [ 5 ]) ]
-  @@ (make_distribution [ 1; 2; 3; 4; 5 ] 2 |> to_list);
+  @@ (make_distribution 2 [ 1; 2; 3; 4; 5 ] |> to_list);
 
   assert_equal
     [
@@ -34,7 +34,7 @@ let test_bigram_distribution _ =
       ([ 4 ], [ 3; 5 ]);
       ([ 5 ], [ 4 ]);
     ]
-  @@ (make_distribution [ 1; 2; 3; 4; 5; 4; 3; 2; 1 ] 2 |> to_list);
+  @@ (make_distribution 2 [ 1; 2; 3; 4; 5; 4; 3; 2; 1 ] |> to_list);
 
   assert_equal
     [
@@ -45,17 +45,17 @@ let test_bigram_distribution _ =
       ([ 7 ], [ 1 ]);
       ([ 8 ], [ 1 ]);
     ]
-  @@ (make_distribution [ 1; 2; 7; 1; 2; 3; 5; 8; 1 ] 2 |> to_list)
+  @@ (make_distribution 2 [ 1; 2; 7; 1; 2; 3; 5; 8; 1 ] |> to_list)
 
 let test_trigram_distribution _ =
   assert_equal [ ([ 1; 1 ], [ 1; 1; 1 ]) ]
-  @@ (make_distribution [ 1; 1; 1; 1; 1 ] 3 |> to_list);
+  @@ (make_distribution 3 [ 1; 1; 1; 1; 1 ] |> to_list);
 
   assert_equal [ ([ 1; 1 ], [ 2; 1; 1; 1 ]) ]
-  @@ (make_distribution [ 1; 1; 1; 1; 1; 2 ] 3 |> to_list);
+  @@ (make_distribution 3 [ 1; 1; 1; 1; 1; 2 ] |> to_list);
 
   assert_equal [ ([ 1; 2 ], [ 3 ]); ([ 2; 3 ], [ 4 ]); ([ 3; 4 ], [ 5 ]) ]
-  @@ (make_distribution [ 1; 2; 3; 4; 5 ] 3 |> to_list);
+  @@ (make_distribution 3 [ 1; 2; 3; 4; 5 ] |> to_list);
 
   assert_equal
     [
@@ -67,7 +67,7 @@ let test_trigram_distribution _ =
       ([ 4; 5 ], [ 4 ]);
       ([ 5; 4 ], [ 3 ]);
     ]
-  @@ (make_distribution [ 1; 2; 3; 4; 5; 4; 3; 2; 1 ] 3 |> to_list);
+  @@ (make_distribution 3 [ 1; 2; 3; 4; 5; 4; 3; 2; 1 ] |> to_list);
 
   assert_equal
     [
@@ -79,10 +79,10 @@ let test_trigram_distribution _ =
       ([ 7; 1 ], [ 2 ]);
       ([ 8; 1 ], [ 2 ]);
     ]
-  @@ (make_distribution [ 1; 2; 7; 1; 2; 3; 5; 8; 1; 2; 3; 5; 1 ] 3 |> to_list)
+  @@ (make_distribution 3 [ 1; 2; 7; 1; 2; 3; 5; 8; 1; 2; 3; 5; 1 ] |> to_list)
 
 let test_sample _ =
-  let simple_distribution = make_distribution [ 1; 1 ] 2 in
+  let simple_distribution = make_distribution 2 [ 1; 1 ] in
 
   assert_equal [] @@ sample_random_sequence simple_distribution [ 1 ] 0;
 
@@ -93,13 +93,13 @@ let test_sample _ =
   assert_equal [ 1; 1; 1; 1; 1 ]
   @@ sample_random_sequence simple_distribution [ 1 ] 5;
 
-  let increasing_distribution = make_distribution [ 1; 2; 3; 4; 5 ] 2 in
+  let increasing_distribution = make_distribution 2 [ 1; 2; 3; 4; 5 ] in
 
   assert_equal [ 2; 3; 4; 5 ]
   @@ sample_random_sequence increasing_distribution [ 1 ] 4;
 
   let complex_distribution =
-    make_distribution [ 1; 2; 7; 1; 2; 3; 5; 8; 1; 2; 3; 5; 1 ] 3
+    make_distribution 3 [ 1; 2; 7; 1; 2; 3; 5; 8; 1; 2; 3; 5; 1 ]
   in
 
   assert_equal [ 3; 5; 1 ]

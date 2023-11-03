@@ -176,19 +176,19 @@ module Distribution (Item : Map.Key) (Random : R) = struct
   let to_list (ngrams : t) : (Item.t list * Item.t list) list =
     ngrams |> Map.to_sequence |> Sequence.to_list
 
-  let make_distribution (list : Item.t list) (n : int) : t =
+  let make_distribution (n : int) (list : Item.t list) : t =
     let rec aux (ls : Item.t list) (context : Item.t list) (ngrams : t) : t =
       match ls with
       | [] -> ngrams
       | hd :: tl ->
           if List.length context < n - 1 then aux tl (context @ [ hd ]) ngrams
           else
-            let updated_ngrams =
+            let next_ngrams =
               Map.update ngrams context ~f:(fun result ->
                   match result with Some cur -> hd :: cur | None -> [ hd ])
             in
-            let updated_context = List.tl_exn context @ [ hd ] in
-            aux tl updated_context updated_ngrams
+            let next_context = List.tl_exn context @ [ hd ] in
+            aux tl next_context next_ngrams
     in
 
     aux list [] Ngram_map.empty
@@ -204,9 +204,35 @@ module Distribution (Item : Map.Key) (Random : R) = struct
             let new_item =
               List.nth_exn cands (List.length cands |> Random.int)
             in
-            let updated_context = List.tl_exn context @ [ new_item ] in
-            let updated_result = result @ [ new_item ] in
-            aux updated_context updated_result
+            let next_context = List.tl_exn context @ [ new_item ] in
+            let next_result = result @ [ new_item ] in
+            aux next_context next_result
     in
     aux context []
 end
+
+let sanitize (s : string) : string =
+  let rec aux (acc : string) (i : int) : string =
+    if String.length s = i then acc
+    else if Char.is_alpha s.[i] || Char.is_digit s.[i] then
+      aux (acc ^ (Char.lowercase s.[i] |> String.make 1)) (i + 1)
+    else aux acc (i + 1)
+  in
+  aux "" 0
+
+let parse_tokens (file : string) : string list =
+  let is_whitespace (c : char) : bool =
+    Char.( = ) c ' ' || Char.( = ) c '\t' || Char.( = ) c '\n'
+  in
+
+  let rec aux (acc : string list) (cur : string) (s : string) : string list =
+    if String.length s = 0 then List.rev acc
+    else
+      let next_s = String.sub s ~pos:1 ~len:(String.length s - 1) in
+      if is_whitespace s.[0] then aux (cur :: acc) "" next_s
+      else aux acc (cur ^ String.make 1 s.[0]) next_s
+  in
+
+  Stdio.In_channel.read_all file
+  |> aux [] "" |> List.map ~f:sanitize
+  |> List.filter ~f:(fun s -> String.length s > 0)
