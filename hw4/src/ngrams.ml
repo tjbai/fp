@@ -49,20 +49,24 @@ let main =
       (* define arguments *)
       let%map_open n = anon ("n" %: int)
       and corpus_file = anon ("corpus-file" %: string)
-      and sample = flag "sample" (listed string) ~doc:"SAMPLE-LENGTH"
-      and most_frequent =
-        flag "most-frequent"
+      and sample =
+        flag "--sample"
           (optional_with_default 0 int)
-          ~doc:"N-MOST-FREQUENT"
-      in
+          ~doc:"Sample n-grams from provided text"
+      and most_frequent =
+        flag "--most-frequent"
+          (optional_with_default 0 int)
+          ~doc:"Most frequent n-grams in provided text"
+      and context = anon (sequence ("..." %: string)) in
+
       (* dispatch *)
       fun () ->
         let d = parse_tokens corpus_file |> make_distribution n in
-        if List.length sample > 0 then
-          sample |> List.hd_exn |> int_of_string
-          |> (match List.tl sample with
-             | Some context -> sample_random_sequence d context
-             | None -> sample_random_sequence d (sample_random_context d))
+        if sample > 0 then
+          sample
+          |> (match context with
+             | [] -> sample_random_sequence d (sample_random_context d)
+             | _ -> sample_random_sequence d context)
           |> List.to_string ~f:Fn.id |> Stdio.printf "%s\n"
         else if most_frequent > 0 then
           match most_frequent with _ -> Stdio.printf "N-MOST-FREQUENT"
