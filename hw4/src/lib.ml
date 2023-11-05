@@ -213,14 +213,17 @@ module Distribution (Item : Map.Key) (Random : R) = struct
   let most_frequent_ngrams (ngrams : t) : (Item.t list * int) list =
     let count_freqs ~(key : Item.t list) ~(data : Item.t list)
         (freqs : int Ngram_map.t) : int Ngram_map.t =
-      List.fold data ~init:freqs ~f:(fun _ el ->
-          Map.update freqs (key @ [ el ]) ~f:(fun result ->
+      List.fold data ~init:freqs ~f:(fun acc el ->
+          Map.update acc (key @ [ el ]) ~f:(fun result ->
               match result with None -> 1 | Some f -> f + 1))
     in
 
     let freqs = Map.fold ngrams ~init:Ngram_map.empty ~f:count_freqs in
+    let compare (ls1, f1) (ls2, f2) =
+      match compare f2 f1 with 0 -> Item_list.compare ls1 ls2 | res -> res
+    in
 
-    freqs |> Map.to_sequence |> Sequence.to_list
+    freqs |> Map.to_sequence |> Sequence.to_list |> List.sort ~compare
 
   let sample_random_context (ngrams : t) : Item.t list =
     let r =
