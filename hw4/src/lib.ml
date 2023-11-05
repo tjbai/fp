@@ -209,6 +209,24 @@ module Distribution (Item : Map.Key) (Random : R) = struct
             aux next_context next_result
     in
     aux context []
+
+  let sample_random_context (ngrams : t) : Item.t list =
+    let total_size =
+      ngrams |> to_list
+      |> List.fold ~init:0 ~f:(fun acc (_, value) -> acc + List.length value)
+    in
+
+    let r = Random.int total_size in
+
+    (* Match r to context *)
+    match
+      ngrams |> to_list
+      |> List.fold ~init:(0, []) ~f:(fun (index, acc) (key, value) ->
+             if index <= r && r <= index + List.length value then
+               (index + List.length value, key)
+             else (index + List.length value, acc))
+    with
+    | _, res -> res
 end
 
 let sanitize (s : string) : string =

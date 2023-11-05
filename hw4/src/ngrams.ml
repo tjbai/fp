@@ -46,6 +46,7 @@ open Distribution (String) (Random)
 let main =
   Command.basic ~summary:"Generate n-grams from a corpus file"
     Command.Let_syntax.(
+      (* define arguments *)
       let%map_open n = anon ("n" %: int)
       and corpus_file = anon ("corpus-file" %: string)
       and sample =
@@ -55,16 +56,17 @@ let main =
           (optional_with_default 0 int)
           ~doc:"N-MOST-FREQUENT Number of most frequent n-grams to show"
       in
+      (* dispatch *)
       fun () ->
         let d = parse_tokens corpus_file |> make_distribution n in
-
         if List.length sample > 0 then
-          let n = int_of_string @@ List.hd_exn sample in
-          match List.tl sample with
-          | Some context ->
-              Stdio.printf "%s\n"
-                (sample_random_sequence d context n |> List.to_string ~f:Fn.id)
-          | None -> ()
-        else Stdio.printf "N-MOST-FREQUENT")
+          sample |> List.hd_exn |> int_of_string
+          |> (match List.tl sample with
+             | Some context -> sample_random_sequence d context
+             | None -> sample_random_sequence d (sample_random_context d))
+          |> List.to_string ~f:Fn.id |> Stdio.printf "%s\n"
+        else if most_frequent > 0 then
+          match most_frequent with _ -> Stdio.printf "N-MOST-FREQUENT"
+        else Stdio.printf "No option passed")
 
 let () = Command_unix.run main
