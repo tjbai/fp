@@ -49,12 +49,11 @@ let main =
       (* define arguments *)
       let%map_open n = anon ("n" %: int)
       and corpus_file = anon ("corpus-file" %: string)
-      and sample =
-        flag "sample" (listed string) ~doc:"SAMPLE-LENGTH [INITIAL-WORDS...]"
+      and sample = flag "sample" (listed string) ~doc:"SAMPLE-LENGTH"
       and most_frequent =
-        flag "most_frequent"
+        flag "most-frequent"
           (optional_with_default 0 int)
-          ~doc:"N-MOST-FREQUENT Number of most frequent n-grams to show"
+          ~doc:"N-MOST-FREQUENT"
       in
       (* dispatch *)
       fun () ->
