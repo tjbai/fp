@@ -60,17 +60,24 @@ let main =
         flag "--most-frequent"
           (optional_with_default 0 int)
           ~doc:"Most frequent n-grams in provided text"
-      and context = anon (sequence ("..." %: string)) in
+      and start = anon (sequence ("..." %: string)) in
 
       (* dispatch *)
       fun () ->
         let d = parse_tokens corpus_file |> make_distribution n in
         if sample > 0 then
-          sample
-          |> (match context with
-             | [] -> sample_random_sequence d (sample_random_context d)
-             | _ -> sample_random_sequence d context)
-          |> List.to_string ~f:Fn.id |> Stdio.printf "%s\n"
+          let context =
+            if List.length start > 0 then
+              start |> List.rev |> Fn.flip List.take 1 |> List.rev
+            else sample_random_context d
+          in
+          let seq =
+            sample_random_sequence d context (sample - List.length start)
+          in
+          start @ seq
+          |> List.fold ~init:"" ~f:(fun acc elem ->
+                 if String.( = ) acc "" then elem else acc ^ " " ^ elem)
+          |> Stdio.printf "%s\n"
         else if most_frequent > 0 then
           most_frequent |> most_frequent_ngrams d
           |> List.map ~f:(fun (ngram, frequency) -> { ngram; frequency })
