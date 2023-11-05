@@ -210,15 +210,25 @@ module Distribution (Item : Map.Key) (Random : R) = struct
     in
     aux context []
 
-  let sample_random_context (ngrams : t) : Item.t list =
-    let total_size =
-      ngrams |> to_list
-      |> List.fold ~init:0 ~f:(fun acc (_, value) -> acc + List.length value)
+  let most_frequent_ngrams (ngrams : t) : (Item.t list * int) list =
+    let count_freqs ~(key : Item.t list) ~(data : Item.t list)
+        (freqs : int Ngram_map.t) : int Ngram_map.t =
+      List.fold data ~init:freqs ~f:(fun _ el ->
+          Map.update freqs (key @ [ el ]) ~f:(fun result ->
+              match result with None -> 1 | Some f -> f + 1))
     in
 
-    let r = Random.int total_size in
+    let freqs = Map.fold ngrams ~init:Ngram_map.empty ~f:count_freqs in
 
-    (* Match r to context *)
+    freqs |> Map.to_sequence |> Sequence.to_list
+
+  let sample_random_context (ngrams : t) : Item.t list =
+    let r =
+      ngrams |> to_list
+      |> List.fold ~init:0 ~f:(fun acc (_, value) -> acc + List.length value)
+      |> Random.int
+    in
+
     match
       ngrams |> to_list
       |> List.fold ~init:(0, []) ~f:(fun (index, acc) (key, value) ->
