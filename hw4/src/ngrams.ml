@@ -43,6 +43,9 @@ open Core
 open Lib
 open Distribution (String) (Random)
 
+type freq = { ngram : string list; frequency : int } [@@deriving sexp]
+type freq_list = freq list [@@deriving sexp]
+
 let main =
   Command.basic ~summary:"Generate n-grams from a corpus file"
     Command.Let_syntax.(
@@ -69,7 +72,9 @@ let main =
              | _ -> sample_random_sequence d context)
           |> List.to_string ~f:Fn.id |> Stdio.printf "%s\n"
         else if most_frequent > 0 then
-          match most_frequent with _ -> Stdio.printf "N-MOST-FREQUENT"
+          most_frequent |> most_frequent_ngrams d
+          |> List.map ~f:(fun (ngram, frequency) -> { ngram; frequency })
+          |> sexp_of_freq_list |> Sexp.to_string |> Stdio.printf "%s\n"
         else Stdio.printf "No option passed")
 
 let () = Command_unix.run main

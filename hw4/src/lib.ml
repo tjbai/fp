@@ -14,7 +14,7 @@ module Distribution (Item : Map.Key) (Random : R) = struct
 
   type t = Item.t list Ngram_map.t
 
-  let to_list (ngrams : t) : (Item.t list * Item.t list) list =
+  let to_list (ngrams : 'a Ngram_map.t) : (Item.t list * 'a) list =
     ngrams |> Map.to_sequence |> Sequence.to_list
 
   let make_distribution (n : int) (list : Item.t list) : t =
@@ -50,7 +50,7 @@ module Distribution (Item : Map.Key) (Random : R) = struct
     in
     aux context []
 
-  let most_frequent_ngrams (ngrams : t) : (Item.t list * int) list =
+  let most_frequent_ngrams (ngrams : t) (k : int) : (Item.t list * int) list =
     let count_freqs ~(key : Item.t list) ~(data : Item.t list)
         (freqs : int Ngram_map.t) : int Ngram_map.t =
       List.fold data ~init:freqs ~f:(fun acc el ->
@@ -63,7 +63,7 @@ module Distribution (Item : Map.Key) (Random : R) = struct
       match compare f2 f1 with 0 -> Item_list.compare ls1 ls2 | res -> res
     in
 
-    freqs |> Map.to_sequence |> Sequence.to_list |> List.sort ~compare
+    freqs |> to_list |> List.sort ~compare |> Fn.flip List.take k
 
   let sample_random_context (ngrams : t) : Item.t list =
     let r =
