@@ -97,13 +97,12 @@ let parse_tokens (file : string) : string list =
   in
 
   let rec aux (acc : string list) (cur : string) (s : string) : string list =
-    if String.length s = 0 then List.rev acc
+    if String.length s = 0 then List.rev (cur :: acc)
     else
       let next_s = String.sub s ~pos:1 ~len:(String.length s - 1) in
       if is_whitespace s.[0] then aux (cur :: acc) "" next_s
       else aux acc (cur ^ String.make 1 s.[0]) next_s
   in
 
-  Stdio.In_channel.read_all file
-  |> aux [] "" |> List.map ~f:sanitize
+  file |> aux [] "" |> List.map ~f:sanitize
   |> List.filter ~f:(fun s -> String.length s > 0)

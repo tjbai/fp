@@ -19,4 +19,5 @@ module Distribution
 end
 with module Random = Random
 
+val sanitize : string -> string
 val parse_tokens : string -> string list
