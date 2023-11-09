@@ -2,10 +2,10 @@ open Core
 open Lib
 open Distribution (String) (Random)
 
-let get_sample (sample : int) (start : string list) (d : t) =
+let get_sample (sample : int) (start : string list) (d : t) (n : int) =
   let context =
     if List.length start > 0 then
-      start |> List.rev |> Fn.flip List.take 1 |> List.rev
+      start |> List.rev |> Fn.flip List.take (n - 1) |> List.rev
     else sample_random_context d
   in
 
@@ -43,7 +43,7 @@ let main =
           Stdio.In_channel.read_all corpus_file
           |> parse_tokens |> make_distribution n
         in
-        if sample > 0 then get_sample sample start d
+        if sample > 0 then get_sample sample start d n
         else if most_frequent > 0 then get_most_frequent most_frequent d
         else Stdio.printf "No option passed")
 
