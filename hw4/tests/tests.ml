@@ -112,6 +112,18 @@ let test_sanitize _ =
   assert_equal "121" @@ sanitize "12@1";
   assert_equal "abcd" @@ sanitize "AbC!!!!@#$D"
 
+let test_sanitize_random _ =
+  let is_sanitized (s : string) : bool =
+    String.fold s ~init:true ~f:(fun acc el ->
+        acc && Char.is_alphanum el && Char.( = ) (Char.lowercase el) el)
+  in
+
+  Quickcheck.test (List.quickcheck_generator String.quickcheck_generator)
+    ~f:(fun res ->
+      assert_bool "Something is not sanitized!"
+        (List.map res ~f:(fun x -> x |> sanitize |> is_sanitized)
+        |> List.fold ~init:true ~f:(fun acc el -> acc && el)))
+
 let test_parse _ =
   assert_equal [] @@ parse_tokens "";
 
@@ -196,6 +208,7 @@ let lib_tests =
          "Make trigram distribution" >:: test_trigram_distribution;
          "Sample from bigram distribution" >:: test_sample;
          "Sanitize string" >:: test_sanitize;
+         "Sanitize random corpus" >:: test_sanitize_random;
          "Parse tokens from file" >:: test_parse;
          "Choose random starting context" >:: test_random_context;
          "Most frequent n-grams" >:: test_most_frequent;
