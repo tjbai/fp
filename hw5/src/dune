@@ -1,5 +1,6 @@
 (library
-  (name monads)
-  (modules monads)
-  (libraries core)
-  (preprocess (pps ppx_let)))
+ (name monads)
+ (modules monads)
+ (libraries core)
+ (preprocess
+  (pps ppx_let)))
