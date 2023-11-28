@@ -1,0 +1,10 @@
+(rule
+  (target assignment5.zip)
+  (deps 
+    src/monads.ml
+    src/monads.mli
+    src/discussion.txt
+    src/dune
+  )
+  (action
+    (run zip -r assignment5.zip %{deps})))
