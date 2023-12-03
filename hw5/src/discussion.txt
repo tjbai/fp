@@ -12,7 +12,14 @@ respectively. Show your work so you can get partial credit.
 
 Write your answer below.
 
+(a) The asymptotic complexity of the mutable stack solution is O(n). Each push/pop
+operation on the stack is constant time, assuming a linked list or resizable list-based
+solution. Because the perform at most n push/pop operations, the overall time
+complexity is O(n).
 
-
-
-
+(b) The asymptotic complexity of the monadic stack solution is also O(n). Even with 
+an immutable stack, push/pop only takes O(1) time. Albeit, we do incur the additional 
+overhead of threading references to this stack between function calls, and the memory 
+accesses could potentially thrash the cache because each node is not necessarily allocated
+in a contiguous memory block. Despite this, asymptotically, because we still only 
+perform at most n push/pop operations, the overall time complexity is O(n).
